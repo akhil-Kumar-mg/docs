@@ -1,4 +1,326 @@
----
-title: "Create Order"
-openapi: "POST /plants"
----
+# Create Order
+
+Create a new order for payment processing. This endpoint is essential for initiating any payment transaction.
+
+## Overview
+
+The Create Order endpoint allows you to create a new payment order that can be used to process payments through various payment methods. Once created, you'll receive a session ID and order ID that can be used to redirect customers to the payment page or integrate with other payment flows.
+
+## Endpoint
+
+```http
+POST https://api.eximpe.com/pg/orders
+```
+
+## Headers
+
+| Header | Required | Description |
+|--------|----------|-------------|
+| `Content-Type` | Yes | Must be `application/json` |
+| `X-Client-Id` | Yes | Your API client ID |
+| `X-Client-Secret` | Yes | Your API client secret |
+
+## Request Body
+
+### Required Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `amount` | string | Yes | Amount in decimal format (e.g., "100.00") |
+| `currency` | string | Yes | 3-letter ISO currency code (e.g., INR, USD) |
+| `reference_id` | string | Yes | Unique identifier for the order |
+| `buyer` | object | Yes | Buyer information object |
+| `product` | object | Yes | Product information object |
+
+### Optional Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `return_url` | string | No | URL to redirect after payment |
+| `mop_type` | string | No | Method of payment type (e.g., UPI) |
+| `invoice` | object | No | Invoice information object |
+
+### Buyer Object
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `buyer.name` | string | Yes | Buyer's full name |
+| `buyer.email` | string | No | Buyer's email address |
+| `buyer.phone` | string | No | Buyer's phone number with country code |
+| `buyer.address` | object | Yes | Buyer's address information |
+
+### Buyer Address Object
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `buyer.address.line_1` | string | Yes | Address line 1 |
+| `buyer.address.line_2` | string | No | Address line 2 |
+| `buyer.address.city` | string | Yes | City name |
+| `buyer.address.state` | string | Yes | State name |
+| `buyer.address.postal_code` | string | Yes | Postal/ZIP code |
+
+### Product Object
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `product.name` | string | Yes | Product name |
+| `product.description` | string | No | Product description |
+| `product.hs_code` | string | No | Harmonized System code |
+| `product.hs_code_description` | string | No | Description of the HS code |
+| `product.type_of_goods` | string | Yes | Type of goods (e.g., goods) |
+
+### Invoice Object
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `invoice.number` | string | No | Invoice number |
+| `invoice.date` | string | No | Invoice date in YYYY-MM-DD format |
+
+## Example Request
+
+```bash
+curl --request POST \
+  --url https://api.eximpe.com/pg/orders \
+  --header 'Content-Type: application/json' \
+  --header 'X-Client-Id: YOUR_CLIENT_ID' \
+  --header 'X-Client-Secret: YOUR_CLIENT_SECRET' \
+  --data '{
+    "amount": "100.00",
+    "currency": "INR",
+    "reference_id": "order_123456",
+    "return_url": "https://your-website.com/payment-success",
+    "mop_type": "UPI",
+    "buyer": {
+      "name": "John Doe",
+      "email": "john.doe@example.com",
+      "phone": "+919876543210",
+      "address": {
+        "line_1": "123 Main Street",
+        "line_2": "Apartment 4B",
+        "city": "Mumbai",
+        "state": "Maharashtra",
+        "postal_code": "400001"
+      }
+    },
+    "product": {
+      "name": "Premium Subscription",
+      "description": "Monthly premium subscription plan",
+      "hs_code": "85287200",
+      "hs_code_description": "Digital content and services",
+      "type_of_goods": "goods"
+    },
+    "invoice": {
+      "number": "INV-2024-001",
+      "date": "2024-01-15"
+    }
+  }'
+```
+
+## Response
+
+### Success Response
+
+```json
+{
+  "success": true,
+  "message": "Order created successfully",
+  "data": {
+    "session_id": "session_abc123def456",
+    "order_id": "order_xyz789uvw012"
+  }
+}
+```
+
+### Error Response
+
+```json
+{
+  "success": false,
+  "message": "Invalid request parameters",
+  "error": {
+    "code": "ERR_ORDER_002",
+    "message": "Required field 'amount' is missing",
+    "details": {
+      "field": "amount",
+      "reason": "Field is required but not provided"
+    }
+  }
+}
+```
+
+## Response Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `success` | boolean | Indicates if the request was successful |
+| `message` | string | Response message |
+| `data` | object | Response data object (only present on success) |
+| `data.session_id` | string | Unique session identifier for payment processing |
+| `data.order_id` | string | Unique order identifier |
+| `error` | object | Error details (only present on failure) |
+| `error.code` | string | Error code (e.g., ERR_ORDER_002) |
+| `error.message` | string | Error message |
+| `error.details` | object | Detailed error information |
+
+## Error Codes
+
+| Error Code | Description | Resolution |
+|------------|-------------|------------|
+| `ERR_ORDER_001` | Invalid API credentials | Check your X-Client-Id and X-Client-Secret |
+| `ERR_ORDER_002` | Missing required fields | Ensure all required parameters are provided |
+| `ERR_ORDER_003` | Invalid amount format | Use decimal format (e.g., "100.00") |
+| `ERR_ORDER_004` | Unsupported currency | Use a supported 3-letter ISO currency code |
+| `ERR_ORDER_005` | Duplicate reference_id | Use a unique reference_id for each order |
+| `ERR_ORDER_006` | Invalid buyer information | Check buyer name and address details |
+| `ERR_ORDER_007` | Invalid product information | Verify product name and type_of_goods |
+
+## Code Examples
+
+### JavaScript
+
+```javascript
+const createOrder = async () => {
+  const response = await fetch('https://api.eximpe.com/pg/orders', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Client-Id': 'YOUR_CLIENT_ID',
+      'X-Client-Secret': 'YOUR_CLIENT_SECRET'
+    },
+    body: JSON.stringify({
+      amount: "100.00",
+      currency: "INR",
+      reference_id: "order_123456",
+      buyer: {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        phone: "+919876543210",
+        address: {
+          line_1: "123 Main Street",
+          city: "Mumbai",
+          state: "Maharashtra",
+          postal_code: "400001"
+        }
+      },
+      product: {
+        name: "Premium Subscription",
+        type_of_goods: "goods"
+      }
+    })
+  });
+
+  const result = await response.json();
+  return result;
+};
+```
+
+### Python
+
+```python
+import requests
+import json
+
+def create_order():
+    url = "https://api.eximpe.com/pg/orders"
+    headers = {
+        "Content-Type": "application/json",
+        "X-Client-Id": "YOUR_CLIENT_ID",
+        "X-Client-Secret": "YOUR_CLIENT_SECRET"
+    }
+    
+    payload = {
+        "amount": "100.00",
+        "currency": "INR",
+        "reference_id": "order_123456",
+        "buyer": {
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "phone": "+919876543210",
+            "address": {
+                "line_1": "123 Main Street",
+                "city": "Mumbai",
+                "state": "Maharashtra",
+                "postal_code": "400001"
+            }
+        },
+        "product": {
+            "name": "Premium Subscription",
+            "type_of_goods": "goods"
+        }
+    }
+    
+    response = requests.post(url, headers=headers, json=payload)
+    return response.json()
+```
+
+### PHP
+
+```php
+<?php
+function createOrder() {
+    $url = 'https://api.eximpe.com/pg/orders';
+    $headers = [
+        'Content-Type: application/json',
+        'X-Client-Id: YOUR_CLIENT_ID',
+        'X-Client-Secret: YOUR_CLIENT_SECRET'
+    ];
+    
+    $payload = [
+        'amount' => '100.00',
+        'currency' => 'INR',
+        'reference_id' => 'order_123456',
+        'buyer' => [
+            'name' => 'John Doe',
+            'email' => 'john.doe@example.com',
+            'phone' => '+919876543210',
+            'address' => [
+                'line_1' => '123 Main Street',
+                'city' => 'Mumbai',
+                'state' => 'Maharashtra',
+                'postal_code' => '400001'
+            ]
+        ],
+        'product' => [
+            'name' => 'Premium Subscription',
+            'type_of_goods' => 'goods'
+        ]
+    ];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    
+    $response = curl_exec($ch);
+    curl_close($ch);
+    
+    return json_decode($response, true);
+}
+?>
+```
+
+## Best Practices
+
+1. **Unique Reference IDs**: Always use unique `reference_id` values to avoid conflicts
+2. **Amount Format**: Use string format for amounts to maintain precision
+3. **Error Handling**: Implement proper error handling for all possible error codes
+4. **Validation**: Validate all input data before making API calls
+5. **Security**: Keep your API credentials secure and never expose them in client-side code
+6. **Testing**: Use the sandbox environment for testing before going live
+
+## Next Steps
+
+After creating an order successfully:
+
+1. Use the `session_id` to redirect customers to the payment page
+2. Implement webhook handling for payment status updates
+3. Use the `order_id` to track and manage the order
+
+## Related Endpoints
+
+- [Get Order Details](/api-reference/orders/get)
+- [List Orders](/api-reference/orders/list)
+- [Cancel Order](/api-reference/orders/cancel)
+- [Webhooks](/api-reference/webhooks)
