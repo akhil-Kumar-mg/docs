@@ -1,0 +1,325 @@
+---
+title: 'Get Order'
+api: 'GET /pg/orders/{order_id}'
+description: 'Retrieve the details of an existing order.'
+---
+
+<RequestExample>
+```bash cURL
+curl --request GET \
+  --url https://api.eximpe.com/pg/orders/OD1673539082 \
+  --header 'accept: application/json' \
+  --header 'x-client-id: YOUR_CLIENT_ID' \
+  --header 'x-client-secret: YOUR_CLIENT_SECRET'
+```
+</RequestExample>
+
+## Headers
+
+<ParamField header="accept" type="string" required>
+  Must be `application/json`
+</ParamField>
+
+<ParamField header="x-client-id" type="string" required>
+  Your API client ID
+</ParamField>
+
+<ParamField header="x-client-secret" type="string" required>
+  Your API client secret
+</ParamField>
+
+## Path Parameters
+
+<ParamField path="order_id" type="string" required>
+  The order ID (e.g., OD1673539082)
+</ParamField>
+
+## Response
+
+<ResponseExample>
+```json 200
+{
+    "success": true,
+    "message": "Request processed successfully.",
+    "data": {
+        "order_id": "OD1673539082",
+        "reference_id": "TEST_UKCZ5Y",
+        "amount": 1000.0,
+        "currency": "INR",
+        "return_url": "https://api-staging.eximpe.com/sample-integration/hosted-payment/callback/",
+        "mop_type": "UPI",
+        "buyer": {
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "phone": "+919876543210",
+            "address": {
+                "line_1": "123 Main Street",
+                "line_2": "Apt 4B",
+                "city": "City",
+                "state": "State",
+                "postal_code": "123456"
+            },
+            "pan_number": "ACRPZ1596M",
+            "dob": "1996-11-12"
+        },
+        "product": {
+            "name": "Sample Product",
+            "description": "This is a sample product description",
+            "hs_code": "98051000",
+            "hs_code_description": "Portable automatic data processing machines",
+            "type_of_goods": "goods"
+        },
+        "invoice": {
+            "number": "INV1236493274",
+            "date": "2025-06-16",
+            "file": "https://eximpe-private-staging-storage.s3.amazonaws.com/..."
+        },
+        "air_waybills": [
+            {
+                "number": "AWB1236493274",
+                "file": "https://eximpe-private-staging-storage.s3.amazonaws.com/..."
+            }
+        ],
+        "payment_requests": [
+            {
+                "payment_id": "PR1528789444",
+                "status": "CAPTURED",
+                "payment_link": null,
+                "expires_at": null,
+                "mop_type": "UPI",
+                "collection_mode": "HOSTED_PAYMENT",
+                "status_message": "Payment successful"
+            }
+        ],
+        "status": "PAYMENT_SUCCESSFUL",
+        "status_message": "Payment captured successfully",
+        "created_at": "2025-06-16T09:21:58.946606Z",
+        "is_testing": true,
+        "is_active": true
+    }
+}
+```
+
+```json Error Response
+{
+    "success": false,
+    "message": "Order not found",
+    "code": "order_not_found",
+    "details": {
+        "order_id": "OD1673539082"
+    }
+}
+```
+</ResponseExample>
+
+## Response Fields
+
+<ResponseField name="success" type="boolean">
+  Indicates if the request was successful
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  Response message
+</ResponseField>
+
+<ResponseField name="data" type="object">
+  Response data object (only present on success)
+
+  <Expandable title="Show child attributes">
+    <ResponseField name="order_id" type="string">
+      Unique order identifier
+    </ResponseField>
+
+    <ResponseField name="reference_id" type="string">
+      Your reference ID for the order
+    </ResponseField>
+
+    <ResponseField name="amount" type="number">
+      Order amount
+    </ResponseField>
+
+    <ResponseField name="currency" type="string">
+      Order currency
+    </ResponseField>
+
+    <ResponseField name="return_url" type="string">
+      URL to redirect after payment
+    </ResponseField>
+
+    <ResponseField name="mop_type" type="string">
+      Method of payment type
+    </ResponseField>
+
+    <ResponseField name="buyer" type="object">
+      Buyer information
+
+      <Expandable title="Show child attributes">
+        <ResponseField name="name" type="string">
+          Buyer's full name
+        </ResponseField>
+
+        <ResponseField name="email" type="string">
+          Buyer's email address
+        </ResponseField>
+
+        <ResponseField name="phone" type="string">
+          Buyer's phone number
+        </ResponseField>
+
+        <ResponseField name="address" type="object">
+          Buyer's address information
+
+          <Expandable title="Show child attributes">
+            <ResponseField name="line_1" type="string">
+              Address line 1
+            </ResponseField>
+
+            <ResponseField name="line_2" type="string">
+              Address line 2
+            </ResponseField>
+
+            <ResponseField name="city" type="string">
+              City
+            </ResponseField>
+
+            <ResponseField name="state" type="string">
+              State
+            </ResponseField>
+
+            <ResponseField name="postal_code" type="string">
+              Postal code
+            </ResponseField>
+          </Expandable>
+        </ResponseField>
+
+        <ResponseField name="pan_number" type="string">
+          Buyer's PAN number
+        </ResponseField>
+
+        <ResponseField name="dob" type="string">
+          Buyer's date of birth
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="product" type="object">
+      Product information
+
+      <Expandable title="Show child attributes">
+        <ResponseField name="name" type="string">
+          Product name
+        </ResponseField>
+
+        <ResponseField name="description" type="string">
+          Product description
+        </ResponseField>
+
+        <ResponseField name="hs_code" type="string">
+          Harmonized System code
+        </ResponseField>
+
+        <ResponseField name="hs_code_description" type="string">
+          Description of the HS code
+        </ResponseField>
+
+        <ResponseField name="type_of_goods" type="string">
+          Type of goods
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="invoice" type="object">
+      Invoice information
+
+      <Expandable title="Show child attributes">
+        <ResponseField name="number" type="string">
+          Invoice number
+        </ResponseField>
+
+        <ResponseField name="date" type="string">
+          Invoice date
+        </ResponseField>
+
+        <ResponseField name="file" type="string">
+          Invoice file URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="air_waybills" type="array">
+      Array of air waybill information
+
+      <Expandable title="Show child attributes">
+        <ResponseField name="number" type="string">
+          Air waybill number
+        </ResponseField>
+
+        <ResponseField name="file" type="string">
+          Air waybill file URL
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="payment_requests" type="array">
+      Array of payment request information
+
+      <Expandable title="Show child attributes">
+        <ResponseField name="payment_id" type="string">
+          Payment request ID
+        </ResponseField>
+
+        <ResponseField name="status" type="string">
+          Payment status
+        </ResponseField>
+
+        <ResponseField name="payment_link" type="string">
+          Payment link (if applicable)
+        </ResponseField>
+
+        <ResponseField name="expires_at" type="string">
+          Payment link expiry time
+        </ResponseField>
+
+        <ResponseField name="mop_type" type="string">
+          Method of payment type
+        </ResponseField>
+
+        <ResponseField name="collection_mode" type="string">
+          Payment collection mode
+        </ResponseField>
+
+        <ResponseField name="status_message" type="string">
+          Payment status message
+        </ResponseField>
+      </Expandable>
+    </ResponseField>
+
+    <ResponseField name="status" type="string">
+      Overall order status
+    </ResponseField>
+
+    <ResponseField name="status_message" type="string">
+      Order status message
+    </ResponseField>
+
+    <ResponseField name="created_at" type="string">
+      Order creation timestamp
+    </ResponseField>
+
+    <ResponseField name="is_testing" type="boolean">
+      Whether this is a test order
+    </ResponseField>
+
+    <ResponseField name="is_active" type="boolean">
+      Whether the order is active
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<ResponseField name="code" type="string">
+  Error code (only present on error)
+</ResponseField>
+
+<ResponseField name="details" type="object">
+  Additional error details (only present on error)
+</ResponseField>

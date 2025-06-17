@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
+  "name": "EximPe Docs",
   "colors": {
     "primary": "#16A34A",
     "light": "#07C983",
@@ -11,14 +11,16 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Integration Guide",
         "groups": [
           {
             "group": "Get Started",
             "pages": [
-              "index",
-              "quickstart",
-              "development"
+              "integration-guide/getting-started/introduction",
+              "integration-guide/getting-started/register-merchant",
+              "integration-guide/getting-started/account-activation",
+              "integration-guide/getting-started/adding-merchants"
+
             ]
           },
           {
@@ -44,12 +46,12 @@
             ]
           },
           {
-            "group": "Endpoint Examples",
+            "group": "Order",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "api-reference/order/create",
+              "api-reference/order/get",
+              "api-reference/order/update_order",
+              "api-reference/order/invoice_upload"
             ]
           }
         ]
