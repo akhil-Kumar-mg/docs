@@ -42,6 +42,12 @@
               "api-reference/order/update_order",
               "api-reference/order/invoice_upload"
             ]
+          },
+          {
+            "group": "Payment",
+            "pages": [
+              "api-reference/payment/list"
+            ]
           }
         ]
       }
