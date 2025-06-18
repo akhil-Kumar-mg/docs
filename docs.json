@@ -3,7 +3,7 @@
   "theme": "mint",
   "name": "EximPe Docs",
   "colors": {
-    "primary": "#16A34A",
+    "primary": "#26A887",
     "light": "#07C983",
     "dark": "#15803D"
   },
@@ -24,14 +24,9 @@
             ]
           },
           {
-            "group": "Essentials",
+            "group": "Web Integration",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/settings",
-              "essentials/navigation",
-              "essentials/reusable-snippets"
+              "integration-guide/web-integration/hosted-checkout"
             ]
           }
         ]
@@ -58,23 +53,6 @@
       }
     ],
     "global": {
-      "anchors": [
-        {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
-          "icon": "book-open-cover"
-        },
-        {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
-          "icon": "slack"
-        },
-        {
-          "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
-          "icon": "newspaper"
-        }
-      ]
     }
   },
   "logo": {

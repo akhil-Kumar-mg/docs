@@ -1,0 +1,242 @@
+---
+title: 'Hosted Checkout'
+description: 'Integrate EximPe Hosted Checkout to accept payments with minimal effort'
+---
+
+<Note>
+  EximPe Hosted Checkout is a pre-built payment page that provides an optimal payment experience. Accept payments securely with minimal integration effort while maintaining full control over your checkout flow.
+</Note>
+
+<CardGroup cols={3}>
+  <Card
+    title="Simplified Checkout"
+    icon="credit-card"
+    href="#step-1-creating-an-order"
+  >
+    Redirect your customers to EximPe's secure payment page to complete their payment
+  </Card>
+  <Card
+    title="Secure & PCI Compliant"
+    icon="shield-check"
+    href="#security-notes"
+  >
+    We handle all sensitive payment data, so you don't need to worry about PCI compliance
+  </Card>
+  <Card
+    title="Customizable"
+    icon="palette"
+    href="#opening-the-checkout-page"
+  >
+    Personalize the checkout experience with your branding and preferred payment methods
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+Before integrating EximPe Hosted Checkout, ensure you have:
+
+- **Merchant Account**: An active EximPe merchant account
+- **Dashboard Access**: Access to the EximPe merchant dashboard
+- **Credentials**: Your merchant ID and API key
+- **Test Environment**: Test environment credentials (for development)
+- **Domain Whitelist**: Whitelisted your website domain for integration
+
+## Integration Steps
+
+The integration process consists of three essential steps:
+
+### Step 1: Creating an Order
+
+Create an order from your backend server before initiating payment:
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST https://api.eximpe.com/pg/orders/ \
+  -H "Content-Type: application/json" \
+  -H "X-Client-ID: YOUR_CLIENT_ID" \
+  -d '{
+    "amount": "1000.00",
+    "currency": "INR",
+    "reference_id": "TEST_5YUIQT",
+    "return_url": "https://your-website.com/payment/callback",
+    "mop_type": "UPI",
+    "buyer": {
+        "name": "John Doe",
+        "email": "john.doe@example.com",
+        "phone": "+919876543210"
+    }
+}'
+```
+
+```json Response
+{
+    "success": true,
+    "message": "Checkout session created successfully",
+    "data": {
+        "session_id": "b4db5e1c82db8636094f54e3293218172ae2ab87dee6ce4e97c82db6c63f243a",
+        "order_id": "OD5916184980"
+    }
+}
+```
+
+</CodeGroup>
+
+<Note>
+  For complete API details including all available parameters, request/response formats, and additional fields, see our [Web Hosted API Reference](/api-reference/hosted-checkout).
+</Note>
+
+### Step 2: Opening the Checkout Page
+
+<Steps>
+  <Step title="Include JS SDK">
+    To integrate the EximPe Checkout, include our JavaScript SDK in your HTML:
+    
+    ```html
+    <script src="https://cdn.eximpe.com/sdk/eximpe-sdk.min.js"></script>
+    ```
+  </Step>
+  
+  <Step title="Initialize the SDK">
+    Initialize the SDK with your environment mode:
+    
+    ```javascript
+    const eximpe = EximPe({
+        mode: "sandbox" // or "production"
+    });
+    ```
+  </Step>
+  
+  <Step title="Open EximPe Checkout">
+    To open the checkout, you can use the **eximpe.checkout()** method:
+    
+    ```javascript
+    eximpe.checkout({
+      sessionId: "your-session-id",
+      redirectTarget: "_self"
+    });
+    ```
+  </Step>
+</Steps>
+
+#### Checkout Parameters
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `sessionId` | string | Yes | Received from Create Payment Session Response |
+| `redirectTarget` | string | No | Controls how the payment page opens |
+
+#### Redirect Target Options
+
+| Property Value | Description |
+|----------------|-------------|
+| `_self` (default) | Opens in the same frame |
+| `_blank` | Opens in a new window/tab |
+| `_top` | Opens in the full window |
+| `_modal` | Opens in a popup window |
+| DOM element | Opens within a specified element |
+
+#### Complete Example
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EximPe Checkout Integration</title>
+    <script src="https://cdn.eximpe.com/sdk/eximpe-sdk.min.js"></script>
+</head>
+<body>
+    <div>
+        <button id="payButton">Pay Now</button>
+    </div>
+    <script>
+        const eximpe = EximPe({
+            mode: "production"
+        });
+
+        document.getElementById("payButton").addEventListener("click", () => {
+            const checkoutOptions = {
+                sessionId: "your-session-id",
+                redirectTarget: "_self"
+            };
+            eximpe.checkout(checkoutOptions);
+        });
+    </script>
+</body>
+</html>
+```
+
+<Warning>
+  For Popup & Inline Checkout, handle the promise returned by **eximpe.checkout()** to execute code after payment completion.
+</Warning>
+
+### Step 3: Confirming the Payment
+
+After payment completion, verify the payment status:
+
+<CardGroup cols={2}>
+  <Card title="Redirect Checkout">
+    <ul>
+      <li>Customer is redirected to your return URL (provided during session creation)</li>
+      <li>Always include a return URL for better user experience</li>
+      <li>Add order context in the return URL for easy identification</li>
+    </ul>
+  </Card>
+  <Card title="Popup & Inline Checkout">
+    <ul>
+      <li>Handle the promise returned by <code>eximpe.checkout()</code></li>
+      <li>Execute additional code after payment completion</li>
+    </ul>
+  </Card>
+</CardGroup>
+
+#### Payment Status Verification
+
+Verify the payment status using the session ID from your backend:
+
+```bash
+curl -X GET https://api.eximpe.com/api/v1/payment/verify/{session_id} \
+  -H "Authorization: Bearer YOUR_API_KEY"
+```
+
+<Warning>
+  **Important:** Always verify the payment status before delivering services. A payment is considered successful when the status is "completed".
+</Warning>
+
+## Security Notes
+
+<CardGroup cols={2}>
+  <Card title="Transaction Validation">
+    After receiving a response from EximPe, you must validate the transaction by verifying the hash or signature (if applicable) against what you sent in the request. This ensures the transaction is secure and untampered.
+  </Card>
+  <Card title="Additional Security">
+    EximPe recommends implementing transaction details APIs and webhooks/callbacks as an extra security measure. For more information, refer to the [Verify Payment API](/api-reference/hosted-checkout) and Webhooks documentation.
+  </Card>
+  <Card title="Record Reconciliation">
+    Always reconcile your records with EximPe's database after you receive the response. Use the verification APIs to confirm transaction details.
+  </Card>
+  <Card title="Sensitive Information">
+    **Never include sensitive information** (such as salt values or plain text hash strings) in the payment request to EximPe. Sensitive information should always be kept secure and never transmitted to the client or as part of the payment request.
+  </Card>
+</CardGroup>
+
+## Need Help?
+
+<CardGroup cols={2}>
+  <Card
+    title="Contact Support"
+    icon="mail"
+    href="mailto:support@eximpe.com"
+  >
+    📩 Email: support@eximpe.com  
+    ⏰ Support Hours: 24/7 | Response within 1 business day
+  </Card>
+  <Card
+    title="Developer Resources"
+    icon="book-open"
+    href="/api-reference/hosted-checkout"
+  >
+    📚 Web Hosted API Reference
+    💻 Developer Resources
+  </Card>
+</CardGroup>
