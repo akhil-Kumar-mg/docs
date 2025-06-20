@@ -80,6 +80,12 @@
               "api-reference/refunds/list",
               "api-reference/refunds/get"
             ]
+          },
+          {
+            "group": "Webhooks",
+            "pages": [
+              "api-reference/webhooks/webhooks"
+            ]
           }
         ]
       }
