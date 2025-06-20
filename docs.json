@@ -3,7 +3,7 @@
   "theme": "mint",
   "name": "EximPe Docs",
   "colors": {
-    "primary": "#26A886",
+    "primary": "#fff",
     "light": "#07C983",
     "dark": "#15803D"
   },
