@@ -58,8 +58,27 @@
           {
             "group": "Merchant",
             "pages": [
-              "api-reference/payment/list",
-              "api-reference/payment/get"  
+              "api-reference/merchant/create",
+              "api-reference/merchant/list",
+              "api-reference/merchant/get",
+              "api-reference/merchant/update",
+              "api-reference/merchant/upload",
+              "api-reference/merchant/delete-invoice"
+            ]
+          },
+          {
+            "group": "Settlement",
+            "pages": [
+              "api-reference/settlements/list",
+              "api-reference/settlements/get"
+            ]
+          },
+           {
+            "group": "Refund",
+            "pages": [
+              "api-reference/refunds/create",
+              "api-reference/refunds/list",
+              "api-reference/refunds/get"
             ]
           }
         ]
