@@ -1,0 +1,39 @@
+---
+title: "Steps to Integrate for Collecting Payments from India"
+description: "Follow these steps to register and collect payments from customer in India"
+---
+
+## Register for EximPe Account
+
+In order to collect Payments from Indian Buyers as a foreign merchant or PA collecting payments on behalf of your merchants, first you need to [signup](https://app.clickup.com/3462325/docs/39n5n-8216/39n5n-8356) on EximPe and get your API Access key and token.
+
+## Payment Collection and Settlement
+
+The cross-border payment collection using EximPe involves the following significant steps:
+
+1. Collect Payment using Web Checkout Integration
+2. Update Invoice ID [Optional]
+3. Get Settlement Details
+4. Upload Invoice/AWB files with EximPe
+
+ 
+
+You can try out each of these steps from the UI, using the EximPe Web Integration Kit.
+
+ 
+
+### Step 1: Collect Payment using Web Checkout Integration
+
+The first step is collect the payment from the buyer. For this you can utilise the EximPe Web Checkout Integration. Refer the [Web Checkout Integration](https://app.clickup.com/3462325/docs/39n5n-8216/39n5n-8196) guide to understand how this works. Refer the [Authentication](https://app.clickup.com/3462325/docs/39n5n-8216/39n5n-7996) page for details on how to authenticate API calls.
+
+### Step 2: Update Invoice ID [Conditional]
+
+**Case**: If the Invoice ID value was unavailable when posting the transaction at Step 1, it can be updated using the **UDF Update** API by posting it in the UDF5 parameter. For more information, refer to [UDF Update API](https://app.clickup.com/3462325/docs/39n5n-8216/39n5n-7876)
+
+### Step 3: Get Settlement Details
+
+You can get the Settlement details and Settlement Details Recon using the [Settlement API's](https://app.clickup.com/3462325/docs/39n5n-8216/39n5n-8136)
+
+### Step 4: Upload the Invoices
+
+According to the RBI guidelines, the invoice file must be shared with EximPe within 10 days of the transaction. The invoices can be uploaded using the **Invoice Upload** API. For more information, refer to [Invoice Upload API](https://app.clickup.com/3462325/docs/39n5n-8216/39n5n-7916).
