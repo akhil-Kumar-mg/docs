@@ -1,0 +1,69 @@
+---
+title: "Webhooks"
+description: "EximPe uses webhooks to provide **real-time server-to-server (S2S) updates** for key payment events, such as successful transactions, refunds and settlements. This ensures a reliable and secure flow of information between EximPe and your backend."
+---
+
+---
+
+## ⚙️ How Webhooks Work
+
+When an event occurs (e.g. payment success), EximPe sends an HTTP POST request to the webhook URL configured by the merchant. This avoids relying solely on browser redirects, which can be disrupted due to user or network issues.
+
+Using webhooks ensures:
+
+- Better reliability than browser redirection
+- Automatic updates even if customer closes the browser
+- Secure transaction confirmation directly to your server
+
+---
+
+## 🔐 Requirements
+
+To use webhooks, ensure:
+
+- Your server has a publicly accessible **HTTPS endpoint** to receive POST requests
+- The endpoint supports the following content types:
+  - `application/x-www-form-urlencoded`
+  - `multipart/form-data`
+- The server must return a **`200 OK`** response to confirm successful receipt
+- EximPe retries up to **3 times** if a 200 OK is not received
+
+---
+
+## 🛠️ Webhook Setup
+
+### ✅  Option 1: Using Dashboard
+
+Configure your webhook URL via the **EximPe Dashboard** under Developer Section.
+
+### ✅  Option 2: Manual Setup
+
+1. Provide your webhook URL and server IP to EximPe Support
+2. EximPe maps the URL to your `merchant_id` and whitelists it
+3. Whitelist EximPe’s IP range (provided during onboarding) in your firewall
+4. Ensure your endpoint can parse incoming payloads and return `200 OK`
+
+---
+
+## 📩  Webhook Events
+
+| **Event Name**    | **Event Type** | **Description**                                                          |
+| ----------------- | -------------- | ------------------------------------------------------------------------ |
+| Successful        | Payment        | Triggered when a payment is successful                                   |
+| Failed            | Payment        | Triggered when a payment has failed                                      |
+| Refund            | Payment        | Triggered when the payment is refunded                                   |
+| Merchant Approved | Onboarding     | Triggered when a merchant is activated and can start collecting payments |
+| Successful        | Settlement     | Triggered when a settlement to the merchant is completed                 |
+
+---
+
+## 🧪 Testing Your Webhook
+
+1. Configure your webhook URL as described
+2. Log all incoming requests on your server
+3. Trigger a test payment in the sandbox or request a test webhook from EximPe
+4. Verify that your endpoint receives and processes the webhook payload correctly
+
+---
+
+For support or IP whitelisting information, contact [techsupport@eximpe.com](mailto:integration@eximpe.com).
