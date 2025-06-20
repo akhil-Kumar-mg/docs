@@ -112,6 +112,9 @@
   },
   "footer": {
     "socials": {
+      "facebook":"https://www.facebook.com/eximpe/",
+      "twitter":"https://x.com/eximpe",
+      "instagram" : "https://www.instagram.com/exim.pe/?hl=en",
       "linkedin": "https://www.linkedin.com/company/eximpe/?viewAsMember=true"
     }
   }
