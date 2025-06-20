@@ -17,9 +17,12 @@
             "group": "Get Started",
             "pages": [
               "integration-guide/getting-started/introduction",
+              "integration-guide/getting-started/steps-to-integrate",
               "integration-guide/getting-started/register-merchant",
+              "integration-guide/getting-started/test-credentials",
               "integration-guide/getting-started/account-activation",
-              "integration-guide/getting-started/adding-merchants"
+              "integration-guide/getting-started/adding-merchants",
+              "integration-guide/getting-started/faqs"
 
             ]
           },
