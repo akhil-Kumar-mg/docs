@@ -49,10 +49,10 @@ Invoices must be uploaded within **10 days** of the transaction per RBI guidelin
 
 ---
 
-## 📄 Invoice Upload
+## Invoice Upload
 
 ### What is the purpose of the Invoice Upload API?
-As per RBI guidelines, invoices must be uploaded within 10 days of the transaction. The Invoice Upload API allows merchants to submit invoices for regulatory and settlement purposes.
+As per RBI guidelines, invoices must be uploaded within 10 days of the transaction. The [Invoice Upload API](/) allows merchants to submit invoices for regulatory and settlement purposes.
 
 ### Which file formats are supported for invoice or AWB files?
 The following formats are supported:
@@ -69,34 +69,6 @@ Yes. For shipments from multiple vendors, you must post multiple requests:
 3. AWB Upload for Vendor B  
 
 Each AWB must have a corresponding file and request.
-
----
-
-## 📝 UDF Update
-
-### What is the UDF Update API?
-UDFs (User-Defined Fields) are used to capture buyer information (e.g., name, address) required for compliance and settlement in cross-border flows.
-
-### What is the format of UDF data?
-- In **EximPe Biz**: JSON body (example to be added)  
-- In **EximPe Hub**: JSON body (example to be added)
-
-### What is the maximum size of UDF data?
-Maximum size is **4 KB**.
-
-### Can I update UDF data after upload?
-Yes, UDF data can be updated multiple times. The latest update will overwrite previous data.
-
-### Is there a limit on the number of updates?
-No limit on the number of updates. Each new update replaces the previous data.
-
-### Why is buyer’s full information mandatory?
-As per RBI, full buyer information (name, address, etc.) is mandatory for:
-
-- KYC compliance  
-- Anti-Money Laundering (AML) requirements  
-- Fraud prevention  
-- Smooth delivery and settlement
 
 ### By when should invoices be uploaded?
 Invoices should be uploaded **as soon as possible**, and no later than **10 days from the transaction date**.
