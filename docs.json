@@ -51,7 +51,15 @@
           {
             "group": "Payment",
             "pages": [
-              "api-reference/payment/list"
+              "api-reference/payment/list",
+              "api-reference/payment/get"  
+            ]
+          },
+          {
+            "group": "Merchant",
+            "pages": [
+              "api-reference/payment/list",
+              "api-reference/payment/get"  
             ]
           }
         ]
