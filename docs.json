@@ -22,8 +22,6 @@
               "integration-guide/getting-started/test-credentials",
               "integration-guide/getting-started/account-activation",
               "integration-guide/getting-started/adding-merchants",
-              "integration-guide/getting-started/webhooks",
-              "integration-guide/getting-started/test-data",
               "integration-guide/getting-started/faqs"
 
             ]
@@ -31,7 +29,9 @@
           {
             "group": "Web Integration",
             "pages": [
-              "integration-guide/web-integration/hosted-checkout"
+              "integration-guide/web-integration/hosted-checkout",
+              "integration-guide/web-integration/webhooks",
+              "integration-guide/web-integration/test-data"
             ]
           }
         ]
