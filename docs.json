@@ -22,6 +22,8 @@
               "integration-guide/getting-started/test-credentials",
               "integration-guide/getting-started/account-activation",
               "integration-guide/getting-started/adding-merchants",
+              "integration-guide/getting-started/webhooks",
+              "integration-guide/getting-started/test-data",
               "integration-guide/getting-started/faqs"
 
             ]
