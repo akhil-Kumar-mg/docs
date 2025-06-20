@@ -46,16 +46,17 @@ The Invoice ID must be shared with ICICI Bank on the **same day** of the transac
 Invoices must be uploaded within **10 days** of the transaction per RBI guidelines.
 
 ### Which payment modes does EximPe support for cross-border payments?
+- UPI
 - Credit/Debit Cards  
 - Net Banking  
-- APIs
+- 
 
 ---
 
 ## 📄 Invoice Upload
 
 ### What is the purpose of the Invoice Upload API?
-As per RBI guidelines, invoices must be uploaded within 10 days of the transaction. The Invoice Upload API allows merchants to submit invoices for regulatory and settlement purposes.
+As per RBI guidelines, invoices must be uploaded within 10 days of the transaction. The Update Order API allows merchants to submit invoices for regulatory and settlement purposes.
 
 ### Which file formats are supported for invoice or AWB files?
 The following formats are supported:
@@ -77,18 +78,12 @@ Each AWB must have a corresponding file and request.
 
 ## 📝 UDF Update
 
-### What is the UDF Update API?
-UDFs (User-Defined Fields) are used to capture buyer information (e.g., name, address) required for compliance and settlement in cross-border flows.
+### What is the Order Update API?
+Order Update API is used to capture buyer information (e.g., name, address) required for compliance and settlement in cross-border flows.
 
-### What is the format of UDF data?
-- In **EximPe Biz**: JSON body (example to be added)  
-- In **EximPe Hub**: JSON body (example to be added)
 
-### What is the maximum size of UDF data?
-Maximum size is **4 KB**.
-
-### Can I update UDF data after upload?
-Yes, UDF data can be updated multiple times. The latest update will overwrite previous data.
+### Can I update Invoice data after upload?
+Yes, Invoice data can be updated multiple times. The latest update will overwrite previous data.
 
 ### Is there a limit on the number of updates?
 No limit on the number of updates. Each new update replaces the previous data.
