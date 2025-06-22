@@ -38,7 +38,6 @@
       },
       {
         "tab": "API Reference",
-        "openapi": "openapi.json",
         "groups": [
           {
             "group": "Order",
@@ -70,8 +69,8 @@
           {
             "group": "Settlement",
             "pages": [
-              "api-reference/settlements/list",
-              "api-reference/settlements/get"
+              "api-reference/settlement/list",
+              "api-reference/settlement/get"
             ]
           },
            {
