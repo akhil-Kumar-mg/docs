@@ -1,123 +1,37 @@
 ---
-title: 'Upload Document'
-api: 'POST /pg/orders/{order_id}/documents/'
-description: 'Upload invoice or air waybill (AWB) files for an order'
+title: 'Upload Invoice'
+description: 'Upload an invoice or other document for an existing order.'
+openapi: '/openapi.json POST /pg/orders/{order_id}/documents/'
 ---
+
+<Note>
+  This endpoint allows you to upload a document (like an invoice or air waybill) and associate it with an existing order.
+</Note>
 
 ## Overview
 
-The Upload Document API allows you to upload invoice or air waybill (AWB) files for an existing order. This endpoint accepts multipart/form-data requests and supports PDF file uploads.
+The Upload Invoice endpoint is used to attach required documents to an order after it has been created. This is crucial for compliance and record-keeping. The request must be sent as `multipart/form-data`.
 
-<RequestExample>
-```bash cURL
-curl -X POST "https://api.example.com/pg/orders/OD1673539082/documents/" \
-  -H "accept: application/json" \
-  -H "content-type: multipart/form-data" \
-  -H "x-client-id: YOUR_CLIENT_ID" \
-  -H "x-client-secret: YOUR_CLIENT_SECRET" \
-  -F "identifier=INV1236493274" \
-  -F "document_type=invoice" \
-  -F "file=@invoice.pdf"
-```
-</RequestExample>
+## Authentication
 
-## Headers
+This endpoint requires authentication using your API credentials. Make sure to include the following headers in your request:
+- `X-Client-Id` - Your API client ID
+- `X-Client-Secret` - Your API client secret
 
-<ParamField header="accept" required>
-  Must be `application/json`
-</ParamField>
+## Document Types
 
-<ParamField header="content-type" required>
-  Must be `multipart/form-data`
-</ParamField>
+You can specify the type of document you are uploading. Supported types include:
+- `invoice`
+- `air_waybill`
+- `other`
 
-<ParamField header="x-client-id" required>
-  Your API client ID
-</ParamField>
+## Usage Examples
 
-<ParamField header="x-client-secret" required>
-  Your API client secret
-</ParamField>
+You can use this endpoint to:
+- Upload a customer invoice after an order is created.
+- Attach an Air Waybill document once a physical product is shipped.
+- Add any other required documentation to an order.
 
-## Path Parameters
-
-<ParamField path="order_id" type="string" required>
-  The order ID (e.g., OD1673539082)
-</ParamField>
-
-## Request Body
-
-<ParamField body="identifier" type="string" required>
-  Document identifier (e.g., invoice number or AWB number)
-</ParamField>
-
-<ParamField body="document_type" type="string" required>
-  Type of document (`invoice` or `awb`)
-</ParamField>
-
-<ParamField body="file" type="file" required>
-  The file to upload (PDF format)
-</ParamField>
-
-## Response
-
-<ResponseField name="success" type="boolean">
-  Indicates if the request was successful
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Success or error message
-</ResponseField>
-
-<ResponseField name="data" type="object">
-  Contains the uploaded document details
-
-  <Expandable title="Show child attributes">
-    <ResponseField name="document_id" type="string">
-      Unique identifier for the uploaded document
-    </ResponseField>
-
-    <ResponseField name="identifier" type="string">
-      Document identifier (invoice number or AWB number)
-    </ResponseField>
-
-    <ResponseField name="document_type" type="string">
-      Type of document (`invoice` or `awb`)
-    </ResponseField>
-
-    <ResponseField name="file_url" type="string">
-      URL to access the uploaded file
-    </ResponseField>
-
-    <ResponseField name="uploaded_at" type="string">
-      Timestamp when the document was uploaded
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseExample>
-```json Success Response
-{
-    "success": true,
-    "message": "Document uploaded successfully",
-    "data": {
-        "document_id": "DOC123456789",
-        "identifier": "INV1236493274",
-        "document_type": "invoice",
-        "file_url": "https://eximpe-private-staging-storage.s3.amazonaws.com/...",
-        "uploaded_at": "2024-06-16T09:21:58.946606Z"
-    }
-}
-```
-
-```json Error Response
-{
-    "success": false,
-    "message": "Invalid file format",
-    "code": "invalid_file_format",
-    "details": {
-        "file": ["Only PDF files are allowed"]
-    }
-}
-```
-</ResponseExample>
+<Button href="/api-reference/order/create" variant="primary">
+  Create an Order First
+</Button>

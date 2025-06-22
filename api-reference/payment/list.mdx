@@ -1,187 +1,33 @@
 ---
 title: 'List Payments'
-api: 'GET /merchant/payments/'
 description: 'Retrieve a list of payments for a merchant.'
+openapi: '/openapi.json GET /merchant/payments/'
 ---
 
-<RequestExample>
-```bash cURL
-curl --location 'http://localhost:8000/merchant/payments/' \
---header 'Accept: application/json, text/plain, */*' \
---header 'Accept-Language: en-GB,en-US;q=0.9,en;q=0.8' \
---header 'Cache-Control: no-cache' \
---header 'Connection: keep-alive' \
---header 'Origin: http://localhost:5173' \
---header 'Pragma: no-cache' \
---header 'Referer: http://localhost:5173/' \
---header 'Sec-Fetch-Dest: empty' \
---header 'Sec-Fetch-Mode: cors' \
---header 'Sec-Fetch-Site: same-site' \
---header 'Sec-GPC: 1' \
---header 'X-Is-Testing: True' \
---header 'X-Client-Secret: C3B49313AC52E1147CF6' \
---header 'X-Client-ID: 3111863955'
-```
-</RequestExample>
+<Note>
+  This endpoint retrieves a paginated list of payments, with powerful filtering capabilities to narrow down the results.
+</Note>
 
-## Headers
+## Overview
+The List Payments endpoint allows you to search and retrieve payment records based on a variety of criteria. You can filter by payment status, date ranges, currency, and more. The response is paginated to handle large datasets efficiently.
 
-<ParamField header="X-Client-ID" type="string" required>
-  Your API client ID
-</ParamField>
+## Filtering
+You can combine multiple filters to create a precise query. All filter parameters are optional.
 
-<ParamField header="X-Client-Secret" type="string" required>
-  Your API client secret
-</ParamField>
+### General Filters
+- `currency`
+- `merchant`
+- `payment_id`
+- `reference_id`
+- `buyer_name`
 
-## Response
+### Enum Filters
+- `payment_mode`: (e.g., `UPI`, `CARD`)
+- `collection_mode`: (e.g., `HOSTED`, `API`)
+- `txn_type`: (e.g., `SALE`, `REFUND`)
+- `status`: (e.g., `PAYMENT_PENDING`, `PAYMENT_SUCCESSFUL`)
+- `payment_gateway`: (e.g., `STRIPE`, `RAZORPAY`)
 
-<ResponseExample>
-```json 200
-{
-    "success": true,
-    "message": "Payments retrieved successfully",
-    "data": [
-        {
-            "payment_id": "PR1062643644",
-            "order_id": "OD1673539082",
-            "reference_id": "TEST_UKCZ5Y",
-            "amount": 1000.0,
-            "currency": "INR",
-            "status": "CAPTURED",
-            "mop_type": "UPI",
-            "collection_mode": "HOSTED_PAYMENT",
-            "status_message": "Payment successful",
-            "created_at": "2025-06-16T09:21:58.946606Z",
-            "updated_at": "2025-06-16T09:22:15.123456Z",
-            "is_testing": true
-        },
-        {
-            "payment_id": "PR1062643645",
-            "order_id": "OD1673539083",
-            "reference_id": "TEST_UKCZ5Z",
-            "amount": 2500.0,
-            "currency": "INR",
-            "status": "PENDING",
-            "mop_type": "CARD",
-            "collection_mode": "HOSTED_PAYMENT",
-            "status_message": "Payment pending",
-            "created_at": "2025-06-16T10:15:30.123456Z",
-            "updated_at": "2025-06-16T10:15:30.123456Z",
-            "is_testing": true
-        }
-    ],
-    "pagination": {
-        "page": 1,
-        "limit": 10,
-        "total": 2,
-        "total_pages": 1
-    }
-}
-```
-
-```json Error Response
-{
-    "success": false,
-    "message": "Unauthorized access",
-    "code": "unauthorized",
-    "details": {
-        "error": "Invalid client credentials"
-    }
-}
-```
-</ResponseExample>
-
-## Response Fields
-
-<ResponseField name="success" type="boolean">
-  Indicates if the request was successful
-</ResponseField>
-
-<ResponseField name="message" type="string">
-  Response message
-</ResponseField>
-
-<ResponseField name="data" type="array">
-  Array of payment objects
-
-  <Expandable title="Show child attributes">
-    <ResponseField name="payment_id" type="string">
-      Unique payment identifier
-    </ResponseField>
-
-    <ResponseField name="order_id" type="string">
-      Associated order ID
-    </ResponseField>
-
-    <ResponseField name="reference_id" type="string">
-      Your reference ID for the payment
-    </ResponseField>
-
-    <ResponseField name="amount" type="number">
-      Payment amount
-    </ResponseField>
-
-    <ResponseField name="currency" type="string">
-      Payment currency
-    </ResponseField>
-
-    <ResponseField name="status" type="string">
-      Payment status (e.g., CAPTURED, PENDING, FAILED)
-    </ResponseField>
-
-    <ResponseField name="mop_type" type="string">
-      Method of payment type
-    </ResponseField>
-
-    <ResponseField name="collection_mode" type="string">
-      Payment collection mode
-    </ResponseField>
-
-    <ResponseField name="status_message" type="string">
-      Payment status message
-    </ResponseField>
-
-    <ResponseField name="created_at" type="string">
-      Payment creation timestamp
-    </ResponseField>
-
-    <ResponseField name="updated_at" type="string">
-      Payment last update timestamp
-    </ResponseField>
-
-    <ResponseField name="is_testing" type="boolean">
-      Whether this is a test payment
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="pagination" type="object">
-  Pagination information
-
-  <Expandable title="Show child attributes">
-    <ResponseField name="page" type="number">
-      Current page number
-    </ResponseField>
-
-    <ResponseField name="limit" type="number">
-      Number of items per page
-    </ResponseField>
-
-    <ResponseField name="total" type="number">
-      Total number of payments
-    </ResponseField>
-
-    <ResponseField name="total_pages" type="number">
-      Total number of pages
-    </ResponseField>
-  </Expandable>
-</ResponseField>
-
-<ResponseField name="code" type="string">
-  Error code (only present on error)
-</ResponseField>
-
-<ResponseField name="details" type="object">
-  Additional error details (only present on error)
-</ResponseField> 
+### Date Filters
+- `from_created_date` / `to_created_date`
+- `from_payment_completed_date` / `to_payment_completed_date`
