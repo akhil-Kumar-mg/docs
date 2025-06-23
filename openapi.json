@@ -17,8 +17,7 @@
   "security": [
     {
       "clientAuth": [],
-      "clientSecretAuth": [],
-      "merchantAuth": []
+      "clientSecretAuth": []
     }
   ],
   "paths": {
@@ -3133,21 +3132,21 @@
       }
     },
     "securitySchemes": {
-      "clientAuth": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
-      },
-      "clientSecretAuth": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
-      },
-      "merchantAuth": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header"
-      }
-    }
+  "clientAuth": {
+    "type": "apiKey",
+    "name": "X-Client-ID",
+    "in": "header"
+  },
+  "clientSecretAuth": {
+    "type": "apiKey",
+    "name": "X-Client-Secret",
+    "in": "header"
+  },
+  "merchantAuth": {
+    "type": "apiKey",
+    "name": "X-Merchant-ID",
+    "in": "header"
+  }
+}
   }
 }
