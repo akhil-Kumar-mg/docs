@@ -1,0 +1,114 @@
+---
+title: "PAYMENT_SETTLED Webhook"
+description: "Technical reference for the PAYMENT_SETTLED webhook event, including payload schema, field specifications, and implementation details."
+---
+
+## 📋 Event Overview
+
+**Event Type**: `PAYMENT_SETTLED`  
+**Category**: Settlement  
+**Description**: Settlement to merchant has been completed
+
+This webhook is triggered when funds are successfully transferred to the merchant's account.
+
+## 📊 Payload Schema
+
+```json
+{
+    "event_type": "PAYMENT_SETTLED",
+    "event_time": "2024-02-15 16:53:15",
+    "version": "1.0",
+    "data": {
+        "settlements": [
+            {
+                "settlement_id": "ST8174378817",
+                "settlement_utr": "ST8174378817",
+                "settlement_done_at": "2025-06-20T19:22:54.734256Z",
+                "forex_rate": 86,
+                "settlement_amount": 1952.8
+            }
+        ]
+    }
+}
+```
+
+## 🔍 Field Specifications
+
+| **Field** | **Type** | **Required** | **Description** |
+|-----------|----------|--------------|-----------------|
+| `event_type` | `string` | ✅ | Always `"PAYMENT_SETTLED"` |
+| `event_time` | `string` | ✅ | Timestamp when the event occurred |
+| `version` | `string` | ✅ | Webhook payload version (currently "1.0") |
+| `data.settlements` | `array` | ✅ | Array of settlement objects |
+| `data.settlements[].settlement_id` | `string` | ✅ | Unique settlement identifier |
+| `data.settlements[].settlement_utr` | `string` | ✅ | UTR (Unique Transaction Reference) |
+| `data.settlements[].settlement_done_at` | `string` | ✅ | ISO 8601 settlement timestamp |
+| `data.settlements[].forex_rate` | `number` | ✅ | Foreign exchange rate |
+| `data.settlements[].settlement_amount` | `number` | ✅ | Final settlement amount |
+
+## 🛠️ Implementation Examples
+
+### JavaScript/Node.js
+
+```javascript
+app.post('/webhook', (req, res) => {
+    const { event_type, data } = req.body;
+    
+    if (event_type === 'PAYMENT_SETTLED') {
+        const { settlements } = data;
+        
+        settlements.forEach(async (settlement) => {
+            const {
+                settlement_id,
+                settlement_utr,
+                settlement_done_at,
+                forex_rate,
+                settlement_amount
+            } = settlement;
+            
+            // Update settlement status
+            await updateSettlementStatus(settlement_id, 'completed');
+            
+            // Update accounting records
+            await createSettlementEntry({
+                settlement_id,
+                utr: settlement_utr,
+                amount: settlement_amount,
+                forex_rate,
+                settled_at: settlement_done_at
+            });
+            
+            // Notify merchant
+            await notifyMerchantSettlement(settlement_id, settlement_amount);
+            
+            // Log settlement
+            await logSettlement({
+                settlement_id,
+                utr: settlement_utr,
+                amount: settlement_amount,
+                forex_rate
+            });
+        });
+    }
+    
+    res.status(200).send('OK');
+});
+```
+
+## 📋 Business Logic Recommendations
+
+1. **Update Settlement Status** - Mark settlement as completed
+2. **Update Accounting** - Create settlement entries
+3. **Notify Merchant** - Inform about successful settlement
+4. **Log for Audit** - Track settlement events
+5. **Update Reconciliation** - Match with bank statements
+
+## ⚠️ Important Notes
+
+- **Idempotency**: Handle duplicate webhooks
+- **Multiple Settlements**: Process all settlements in the array
+- **UTR Tracking**: Use UTR for bank reconciliation
+- **Forex Rate**: Important for international settlements
+- **Verification**: Always verify webhook signature
+
+For technical support, contact [engineering@eximpe.com](mailto:engineering@eximpe.com). 
