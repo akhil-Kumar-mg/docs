@@ -1578,9 +1578,7 @@
         "type": "object",
         "required": [
           "name",
-          "address",
-          "email",
-          "phone"
+          "address"
         ],
         "properties": {
           "name": {
