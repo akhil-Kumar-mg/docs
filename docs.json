@@ -83,7 +83,7 @@
           {
             "group": "Webhooks",
             "pages": [
-              "api-reference/webhooks/webhooks"
+              "api-reference/webhooks"
             ]
           }
         ]

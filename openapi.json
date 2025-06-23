@@ -554,7 +554,7 @@
         }
       }
     },
-    "/merchant/payments/": {
+    "/payments/": {
       "get": {
         "summary": "List Payments",
         "description": "Retrieve a list of payments with optional filtering.",
@@ -609,7 +609,7 @@
             }
           },
           {
-            "name": "payment_mode",
+            "name": "mop_type",
             "in": "query",
             "description": "Filter by payment mode.",
             "schema": {
@@ -733,7 +733,7 @@
         }
       }
     },
-    "/merchant/payments/{payment_id}/": {
+    "/payments/{payment_id}/": {
       "get": {
         "summary": "Get Payment",
         "description": "Retrieve the details of a specific payment by its ID.",
@@ -2247,7 +2247,7 @@
             "format": "date-time",
             "description": "Payment update timestamp"
           },
-          "payment_mode": {
+          "mop_type": {
             "type": "string",
             "description": "Method of payment",
             "enum": [

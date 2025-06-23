@@ -1,69 +1,477 @@
 ---
-title: "Webhooks"
-description: "EximPe uses webhooks to provide **real-time server-to-server (S2S) updates** for key payment events, such as successful transactions, refunds and settlements. This ensures a reliable and secure flow of information between EximPe and your backend."
+title: "API Reference"
+description: "Complete technical reference for EximPe webhook events, including payload schemas, field specifications, and implementation details for developers."
 ---
 
 ---
 
-## ⚙️ How Webhooks Work
+## 📋 Overview
 
-When an event occurs (e.g. payment success), EximPe sends an HTTP POST request to the webhook URL configured by the merchant. This avoids relying solely on browser redirects, which can be disrupted due to user or network issues.
+EximPe webhooks are HTTP POST requests sent to your configured endpoint when payment events occur. Each webhook contains a signed payload with event-specific data.
 
-Using webhooks ensures:
+### Request Format
 
-- Better reliability than browser redirection
-- Automatic updates even if customer closes the browser
-- Secure transaction confirmation directly to your server
+- **Method**: `POST`
+- **Content-Type**: `application/x-www-form-urlencoded` or `multipart/form-data`
+- **Headers**: Include `x-signature` for verification
+- **Response**: Must return `200 OK`
 
----
+### Retry Logic
 
-## 🔐 Requirements
-
-To use webhooks, ensure:
-
-- Your server has a publicly accessible **HTTPS endpoint** to receive POST requests
-- The endpoint supports the following content types:
-  - `application/x-www-form-urlencoded`
-  - `multipart/form-data`
-- The server must return a **`200 OK`** response to confirm successful receipt
-- EximPe retries up to **3 times** if a 200 OK is not received
+- **Retry Attempts**: 3 times
+- **Retry Interval**: Exponential backoff
+- **Success Criteria**: 200 OK response
 
 ---
 
-## 🛠️ Webhook Setup
+## 🔐 Authentication
 
-### ✅  Option 1: Using Dashboard
+### Signature Verification
 
-Configure your webhook URL via the **EximPe Dashboard** under Developer Section.
+EximPe signs webhooks using HMAC-SHA256. The signature is included in the `x-signature` header.
 
-### ✅  Option 2: Manual Setup
+#### Verification Process
 
-1. Provide your webhook URL and server IP to EximPe Support
-2. EximPe maps the URL to your `merchant_id` and whitelists it
-3. Whitelist EximPe’s IP range (provided during onboarding) in your firewall
-4. Ensure your endpoint can parse incoming payloads and return `200 OK`
+1. **Extract message parts** from the webhook payload
+2. **Join parts** using `|` as separator
+3. **Generate HMAC** using your encryption key and SHA-256
+4. **Compare** with the received signature
+
+#### Implementation Example
+
+```javascript
+const crypto = require('crypto');
+
+function verifyWebhookSignature(payload, receivedSignature, encryptionKey) {
+    // Extract message parts (implementation depends on your payload structure)
+    const messageParts = extractMessageParts(payload);
+    const message = messageParts.join('|');
+    
+    // Generate signature
+    const generatedSignature = crypto
+        .createHmac('sha256', encryptionKey)
+        .update(message)
+        .digest('hex');
+    
+    return generatedSignature === receivedSignature;
+}
+```
 
 ---
 
-## 📩  Webhook Events
+## 📊 Webhook Events Reference
 
-| **Event Name**    | **Event Type** | **Description**                                                          |
-| ----------------- | -------------- | ------------------------------------------------------------------------ |
-| Successful        | Payment        | Triggered when a payment is successful                                   |
-| Failed            | Payment        | Triggered when a payment has failed                                      |
-| Refund            | Payment        | Triggered when the payment is refunded                                   |
-| Merchant Approved | Onboarding     | Triggered when a merchant is activated and can start collecting payments |
-| Successful        | Settlement     | Triggered when a settlement to the merchant is completed                 |
+### MERCHANT_APPROVED
+
+**Event Type**: `MERCHANT_APPROVED`  
+**Category**: Onboarding  
+**Description**: Merchant account has been approved and activated
+
+#### Payload Schema
+
+```json
+{
+    "event_type": "MERCHANT_APPROVED",
+    "event_time": "2024-02-15 16:53:15",
+    "version": "1.0",
+    "data": {
+        "approved_at": "2025-06-23T07:29:29.679970Z",
+        "merchant_id": "1380229823",
+        "merchant_legal_name": "Herrin",
+        "merchant_trade_name": "sdmndks"
+    }
+}
+```
+
+#### Field Specifications
+
+| **Field** | **Type** | **Required** | **Description** |
+|-----------|----------|--------------|-----------------|
+| `event_type` | `string` | ✅ | Always `"MERCHANT_APPROVED"` |
+| `event_time` | `string` | ✅ | Timestamp (YYYY-MM-DD HH:MM:SS) |
+| `version` | `string` | ✅ | Payload version (currently "1.0") |
+| `data.approved_at` | `string` | ✅ | ISO 8601 approval timestamp |
+| `data.merchant_id` | `string` | ✅ | Unique merchant identifier |
+| `data.merchant_legal_name` | `string` | ✅ | Legal business name |
+| `data.merchant_trade_name` | `string` | ✅ | Trading/brand name |
 
 ---
 
-## 🧪 Testing Your Webhook
+### PAYMENT_SUCCESSFUL
 
-1. Configure your webhook URL as described
-2. Log all incoming requests on your server
-3. Trigger a test payment in the sandbox or request a test webhook from EximPe
-4. Verify that your endpoint receives and processes the webhook payload correctly
+**Event Type**: `PAYMENT_SUCCESSFUL`  
+**Category**: Payment  
+**Description**: Payment transaction was successful
+
+#### Payload Schema
+
+```json
+{
+    "event_type": "PAYMENT_SUCCESSFUL",
+    "event_time": "2024-02-15 16:53:15",
+    "version": "1.0",
+    "data": {
+        "id": "PR9860790452",
+        "merchant": {
+            "id": "6889114728",
+            "name": "Herring Lt"
+        },
+        "reference_id": "TEST_S5DL8G",
+        "buyer": {
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "phone": "+919876543210"
+        },
+        "order_id": "OD1418501900",
+        "amount": {
+            "amount": 1000.0,
+            "total_amount": 1000.0,
+            "currency": "INR"
+        },
+        "created_at": "2025-06-23T15:33:17.372325Z",
+        "status": "CAPTURED",
+        "comment": "Invoice and AWB file missing",
+        "preferred_method": "UPI",
+        "mop_type": "UPI",
+        "settlement_status": "READY_FOR_SETTLEMENT"
+    }
+}
+```
+
+#### Field Specifications
+
+| **Field** | **Type** | **Required** | **Description** |
+|-----------|----------|--------------|-----------------|
+| `data.id` | `string` | ✅ | Payment request ID |
+| `data.merchant.id` | `string` | ✅ | Merchant ID |
+| `data.merchant.name` | `string` | ✅ | Merchant name |
+| `data.reference_id` | `string` | ✅ | Reference ID for payment |
+| `data.buyer.name` | `string` | ✅ | Buyer's name |
+| `data.buyer.email` | `string` | ✅ | Buyer's email |
+| `data.buyer.phone` | `string` | ✅ | Buyer's phone number |
+| `data.order_id` | `string` | ✅ | Order ID |
+| `data.amount.amount` | `number` | ✅ | Payment amount |
+| `data.amount.total_amount` | `number` | ✅ | Total amount including fees |
+| `data.amount.currency` | `string` | ✅ | Currency code |
+| `data.created_at` | `string` | ✅ | ISO 8601 creation timestamp |
+| `data.status` | `string` | ✅ | Payment status (CAPTURED) |
+| `data.comment` | `string` | ✅ | Additional comment |
+| `data.preferred_method` | `string` | ✅ | Preferred payment method |
+| `data.mop_type` | `string` | ✅ | Method of payment type |
+| `data.settlement_status` | `string` | ✅ | Settlement status |
 
 ---
 
-For support or IP whitelisting information, contact [techsupport@eximpe.com](mailto:integration@eximpe.com).
+### PAYMENT_FAILED
+
+**Event Type**: `PAYMENT_FAILED`  
+**Category**: Payment  
+**Description**: Payment transaction has failed
+
+#### Payload Schema
+
+```json
+{
+    "event_type": "PAYMENT_FAILED",
+    "event_time": "2024-02-15 16:53:15Z",
+    "version": "1.0",
+    "data": {
+        "id": "PR2594743053",
+        "merchant": {
+            "id": "6889114728",
+            "name": "Herring Lt"
+        },
+        "reference_id": "TEST_UAYJWL",
+        "buyer": {
+            "name": "John Doe",
+            "email": "john.doe@example.com",
+            "phone": "+919876543210"
+        },
+        "order_id": "OD3119565151",
+        "amount": {
+            "amount": 1000.0,
+            "total_amount": 1000.0,
+            "currency": "INR"
+        },
+        "created_at": "2025-06-23T15:43:29.632246Z",
+        "status": "FAILED",
+        "comment": "Invalid mpin",
+        "preferred_method": "UPI",
+        "mop_type": "UPI",
+        "settlement_status": "PAYMENT_PENDING"
+    }
+}
+```
+
+#### Field Specifications
+
+| **Field** | **Type** | **Required** | **Description** |
+|-----------|----------|--------------|-----------------|
+| `data.id` | `string` | ✅ | Payment request ID |
+| `data.merchant.id` | `string` | ✅ | Merchant ID |
+| `data.merchant.name` | `string` | ✅ | Merchant name |
+| `data.reference_id` | `string` | ✅ | Reference ID for payment |
+| `data.buyer.name` | `string` | ✅ | Buyer's name |
+| `data.buyer.email` | `string` | ✅ | Buyer's email |
+| `data.buyer.phone` | `string` | ✅ | Buyer's phone number |
+| `data.order_id` | `string` | ✅ | Order ID |
+| `data.amount.amount` | `number` | ✅ | Payment amount |
+| `data.amount.total_amount` | `number` | ✅ | Total amount including fees |
+| `data.amount.currency` | `string` | ✅ | Currency code |
+| `data.created_at` | `string` | ✅ | ISO 8601 creation timestamp |
+| `data.status` | `string` | ✅ | Payment status (FAILED) |
+| `data.comment` | `string` | ✅ | Failure reason |
+| `data.preferred_method` | `string` | ✅ | Preferred payment method |
+| `data.mop_type` | `string` | ✅ | Method of payment type |
+| `data.settlement_status` | `string` | ✅ | Settlement status |
+
+---
+
+### PAYMENT_REFUNDED
+
+**Event Type**: `PAYMENT_REFUNDED`  
+**Category**: Payment  
+**Description**: Payment has been refunded
+
+#### Payload Schema
+
+```json
+{
+    "event_type": "PAYMENT_REFUNDED",
+    "event_time": "2024-02-15 16:53:15",
+    "version": "1.0",
+    "data": {
+        "refunds": [
+            {
+                "payment_request_id": "PR7485664995",
+                "order_id": "OD6085456489",
+                "amount": 1000,
+                "bank_arn": null
+            }
+        ]
+    }
+}
+```
+
+#### Field Specifications
+
+| **Field** | **Type** | **Required** | **Description** |
+|-----------|----------|--------------|-----------------|
+| `data.refunds` | `array` | ✅ | Array of refund objects |
+| `data.refunds[].payment_request_id` | `string` | ✅ | Original payment request ID |
+| `data.refunds[].order_id` | `string` | ✅ | Order ID |
+| `data.refunds[].amount` | `number` | ✅ | Refund amount |
+| `data.refunds[].bank_arn` | `string` | ❌ | Bank ARN (Acquirer Reference Number) |
+
+---
+
+### PAYMENT_SETTLED
+
+**Event Type**: `PAYMENT_SETTLED`  
+**Category**: Settlement  
+**Description**: Settlement to merchant has been completed
+
+#### Payload Schema
+
+```json
+{
+    "event_type": "PAYMENT_SETTLED",
+    "event_time": "2024-02-15 16:53:15",
+    "version": "1.0",
+    "data": {
+        "settlements": [
+            {
+                "settlement_id": "ST8174378817",
+                "settlement_utr": "ST8174378817",
+                "settlement_done_at": "2025-06-20T19:22:54.734256Z",
+                "forex_rate": 86,
+                "settlement_amount": 1952.8
+            }
+        ]
+    }
+}
+```
+
+#### Field Specifications
+
+| **Field** | **Type** | **Required** | **Description** |
+|-----------|----------|--------------|-----------------|
+| `data.settlements` | `array` | ✅ | Array of settlement objects |
+| `data.settlements[].settlement_id` | `string` | ✅ | Unique settlement identifier |
+| `data.settlements[].settlement_utr` | `string` | ✅ | UTR (Unique Transaction Reference) |
+| `data.settlements[].settlement_done_at` | `string` | ✅ | ISO 8601 settlement timestamp |
+| `data.settlements[].forex_rate` | `number` | ✅ | Foreign exchange rate |
+| `data.settlements[].settlement_amount` | `number` | ✅ | Final settlement amount |
+
+---
+
+## 🛠️ Implementation Examples
+
+### Node.js Express Handler
+
+```javascript
+const express = require('express');
+const crypto = require('crypto');
+
+const app = express();
+app.use(express.json());
+
+app.post('/webhook', (req, res) => {
+    try {
+        const { event_type, data } = req.body;
+        const signature = req.headers['x-signature'];
+        
+        // Verify signature
+        if (!verifySignature(req.body, signature, process.env.WEBHOOK_KEY)) {
+            return res.status(401).send('Invalid signature');
+        }
+        
+        // Handle different event types
+        switch (event_type) {
+            case 'PAYMENT_SUCCESSFUL':
+                handlePaymentSuccess(data);
+                break;
+            case 'PAYMENT_FAILED':
+                handlePaymentFailure(data);
+                break;
+            case 'PAYMENT_REFUNDED':
+                handlePaymentRefund(data);
+                break;
+            case 'MERCHANT_APPROVED':
+                handleMerchantApproval(data);
+                break;
+            case 'PAYMENT_SETTLED':
+                handleSettlement(data);
+                break;
+            default:
+                console.log(`Unknown event type: ${event_type}`);
+        }
+        
+        res.status(200).send('OK');
+    } catch (error) {
+        console.error('Webhook processing error:', error);
+        res.status(500).send('Internal server error');
+    }
+});
+
+function handlePaymentSuccess(data) {
+    const { id, order_id, amount, buyer } = data;
+    console.log(`Payment ${id} successful for order ${order_id}`);
+    // Implement your business logic here
+}
+```
+
+### Python Flask Handler
+
+```python
+from flask import Flask, request, jsonify
+import hmac
+import hashlib
+import json
+
+app = Flask(__name__)
+
+@app.route('/webhook', methods=['POST'])
+def webhook_handler():
+    try:
+        # Get webhook data
+        data = request.get_json()
+        signature = request.headers.get('x-signature')
+        
+        # Verify signature
+        if not verify_signature(data, signature, app.config['WEBHOOK_KEY']):
+            return jsonify({'error': 'Invalid signature'}), 401
+        
+        event_type = data.get('event_type')
+        webhook_data = data.get('data')
+        
+        # Handle different event types
+        if event_type == 'PAYMENT_SUCCESSFUL':
+            handle_payment_success(webhook_data)
+        elif event_type == 'PAYMENT_FAILED':
+            handle_payment_failure(webhook_data)
+        elif event_type == 'PAYMENT_REFUNDED':
+            handle_payment_refund(webhook_data)
+        elif event_type == 'MERCHANT_APPROVED':
+            handle_merchant_approval(webhook_data)
+        elif event_type == 'PAYMENT_SETTLED':
+            handle_settlement(webhook_data)
+        
+        return jsonify({'status': 'OK'}), 200
+        
+    except Exception as e:
+        print(f"Webhook processing error: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+
+def verify_signature(data, received_signature, secret_key):
+    # Implement signature verification logic
+    message = json.dumps(data, separators=(',', ':'))
+    expected_signature = hmac.new(
+        secret_key.encode(),
+        message.encode(),
+        hashlib.sha256
+    ).hexdigest()
+    
+    return hmac.compare_digest(expected_signature, received_signature)
+
+def handle_payment_success(data):
+    payment_id = data.get('id')
+    order_id = data.get('order_id')
+    print(f"Payment {payment_id} successful for order {order_id}")
+    # Implement your business logic here
+```
+
+---
+
+## 📊 Status Codes & Values
+
+### Payment Status Values
+
+| **Status** | **Description** |
+|------------|-----------------|
+| `CAPTURED` | Payment successfully captured |
+| `FAILED` | Payment attempt failed |
+| `PENDING` | Payment is pending |
+| `CANCELLED` | Payment was cancelled |
+
+### Settlement Status Values
+
+| **Status** | **Description** |
+|------------|-----------------|
+| `READY_FOR_SETTLEMENT` | Payment ready for settlement |
+| `SETTLEMENT_PENDING` | Settlement in progress |
+| `SETTLED` | Settlement completed |
+| `PAYMENT_PENDING` | Payment pending |
+
+### Payment Methods
+
+| **Method** | **Description** |
+|------------|-----------------|
+| `UPI` | Unified Payments Interface |
+| `CARD` | Credit/Debit Card |
+| `NETBANKING` | Net Banking |
+| `WALLET` | Digital Wallet |
+
+---
+
+## ⚠️ Error Handling
+
+### Common Error Scenarios
+
+1. **Invalid Signature**: Return 401 Unauthorized
+2. **Malformed Payload**: Return 400 Bad Request
+3. **Processing Error**: Return 500 Internal Server Error
+4. **Success**: Return 200 OK
+
+### Best Practices
+
+- **Always verify signatures** before processing
+- **Log all webhook events** for debugging
+- **Handle all event types** even if not used
+- **Return appropriate HTTP status codes**
+- **Implement idempotency** to handle duplicate webhooks
+- **Use HTTPS endpoints** only
+
+---
+
+For technical support, contact [engineering@eximpe.com](mailto:engineering@eximpe.com).

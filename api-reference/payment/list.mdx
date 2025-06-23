@@ -1,7 +1,7 @@
 ---
 title: 'List Payments'
 description: 'Retrieve a list of payments for a merchant.'
-openapi: '/openapi.json GET /merchant/payments/'
+openapi: '/openapi.json GET /payments/'
 ---
 
 ## Overview
@@ -10,20 +10,16 @@ The List Payments endpoint allows you to search and retrieve payment records bas
 ## Filtering
 You can combine multiple filters to create a precise query. All filter parameters are optional.
 
-### General Filters
+### Available Filters
 - `currency`
 - `merchant`
 - `payment_id`
 - `reference_id`
 - `buyer_name`
-
-### Enum Filters
-- `payment_mode`: (e.g., `UPI`, `CARD`)
+- `mop_type`: (e.g., `UPI`, `CARD`)
 - `collection_mode`: (e.g., `HOSTED`, `API`)
 - `txn_type`: (e.g., `SALE`, `REFUND`)
 - `status`: (e.g., `PAYMENT_PENDING`, `PAYMENT_SUCCESSFUL`)
 - `payment_gateway`: (e.g., `STRIPE`, `RAZORPAY`)
-
-### Date Filters
 - `from_created_date` / `to_created_date`
 - `from_payment_completed_date` / `to_payment_completed_date`
