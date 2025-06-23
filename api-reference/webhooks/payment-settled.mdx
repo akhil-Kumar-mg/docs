@@ -1,5 +1,5 @@
 ---
-title: "PAYMENT_SETTLED Webhook"
+title: "PAYMENT SETTLED"
 description: "Technical reference for the PAYMENT_SETTLED webhook event, including payload schema, field specifications, and implementation details."
 ---
 
@@ -45,70 +45,3 @@ This webhook is triggered when funds are successfully transferred to the merchan
 | `data.settlements[].settlement_done_at` | `string` | ✅ | ISO 8601 settlement timestamp |
 | `data.settlements[].forex_rate` | `number` | ✅ | Foreign exchange rate |
 | `data.settlements[].settlement_amount` | `number` | ✅ | Final settlement amount |
-
-## 🛠️ Implementation Examples
-
-### JavaScript/Node.js
-
-```javascript
-app.post('/webhook', (req, res) => {
-    const { event_type, data } = req.body;
-    
-    if (event_type === 'PAYMENT_SETTLED') {
-        const { settlements } = data;
-        
-        settlements.forEach(async (settlement) => {
-            const {
-                settlement_id,
-                settlement_utr,
-                settlement_done_at,
-                forex_rate,
-                settlement_amount
-            } = settlement;
-            
-            // Update settlement status
-            await updateSettlementStatus(settlement_id, 'completed');
-            
-            // Update accounting records
-            await createSettlementEntry({
-                settlement_id,
-                utr: settlement_utr,
-                amount: settlement_amount,
-                forex_rate,
-                settled_at: settlement_done_at
-            });
-            
-            // Notify merchant
-            await notifyMerchantSettlement(settlement_id, settlement_amount);
-            
-            // Log settlement
-            await logSettlement({
-                settlement_id,
-                utr: settlement_utr,
-                amount: settlement_amount,
-                forex_rate
-            });
-        });
-    }
-    
-    res.status(200).send('OK');
-});
-```
-
-## 📋 Business Logic Recommendations
-
-1. **Update Settlement Status** - Mark settlement as completed
-2. **Update Accounting** - Create settlement entries
-3. **Notify Merchant** - Inform about successful settlement
-4. **Log for Audit** - Track settlement events
-5. **Update Reconciliation** - Match with bank statements
-
-## ⚠️ Important Notes
-
-- **Idempotency**: Handle duplicate webhooks
-- **Multiple Settlements**: Process all settlements in the array
-- **UTR Tracking**: Use UTR for bank reconciliation
-- **Forex Rate**: Important for international settlements
-- **Verification**: Always verify webhook signature
-
-For technical support, contact [engineering@eximpe.com](mailto:engineering@eximpe.com). 

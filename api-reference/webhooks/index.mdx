@@ -1,5 +1,5 @@
 ---
-title: "Webhooks API Reference"
+title: "Introduction"
 description: "Complete technical reference for EximPe webhook events, including payload schemas, field specifications, and implementation details for developers."
 ---
 
@@ -126,99 +126,6 @@ function handlePaymentSuccess(data) {
     // Implement your business logic here
 }
 ```
-
-### Python Flask Handler
-
-```python
-from flask import Flask, request, jsonify
-import hmac
-import hashlib
-import json
-
-app = Flask(__name__)
-
-@app.route('/webhook', methods=['POST'])
-def webhook_handler():
-    try:
-        # Get webhook data
-        data = request.get_json()
-        signature = request.headers.get('x-signature')
-        
-        # Verify signature
-        if not verify_signature(data, signature, app.config['WEBHOOK_KEY']):
-            return jsonify({'error': 'Invalid signature'}), 401
-        
-        event_type = data.get('event_type')
-        webhook_data = data.get('data')
-        
-        # Handle different event types
-        if event_type == 'PAYMENT_SUCCESSFUL':
-            handle_payment_success(webhook_data)
-        elif event_type == 'PAYMENT_FAILED':
-            handle_payment_failure(webhook_data)
-        elif event_type == 'PAYMENT_REFUNDED':
-            handle_payment_refund(webhook_data)
-        elif event_type == 'MERCHANT_APPROVED':
-            handle_merchant_approval(webhook_data)
-        elif event_type == 'PAYMENT_SETTLED':
-            handle_settlement(webhook_data)
-        
-        return jsonify({'status': 'OK'}), 200
-        
-    except Exception as e:
-        print(f"Webhook processing error: {e}")
-        return jsonify({'error': 'Internal server error'}), 500
-
-def verify_signature(data, received_signature, secret_key):
-    # Implement signature verification logic
-    message = json.dumps(data, separators=(',', ':'))
-    expected_signature = hmac.new(
-        secret_key.encode(),
-        message.encode(),
-        hashlib.sha256
-    ).hexdigest()
-    
-    return hmac.compare_digest(expected_signature, received_signature)
-
-def handle_payment_success(data):
-    payment_id = data.get('id')
-    order_id = data.get('order_id')
-    print(f"Payment {payment_id} successful for order {order_id}")
-    # Implement your business logic here
-```
-
----
-
-## 📊 Status Codes & Values
-
-### Payment Status Values
-
-| **Status** | **Description** |
-|------------|-----------------|
-| `CAPTURED` | Payment successfully captured |
-| `FAILED` | Payment attempt failed |
-| `PENDING` | Payment is pending |
-| `CANCELLED` | Payment was cancelled |
-
-### Settlement Status Values
-
-| **Status** | **Description** |
-|------------|-----------------|
-| `READY_FOR_SETTLEMENT` | Payment ready for settlement |
-| `SETTLEMENT_PENDING` | Settlement in progress |
-| `SETTLED` | Settlement completed |
-| `PAYMENT_PENDING` | Payment pending |
-
-### Payment Methods
-
-| **Method** | **Description** |
-|------------|-----------------|
-| `UPI` | Unified Payments Interface |
-| `CARD` | Credit/Debit Card |
-| `NETBANKING` | Net Banking |
-| `WALLET` | Digital Wallet |
-
----
 
 ## ⚠️ Error Handling
 

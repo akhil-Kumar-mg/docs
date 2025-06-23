@@ -83,6 +83,7 @@
           {
             "group": "Webhooks",
             "pages": [
+              "api-reference/webhooks/index",
               "api-reference/webhooks/merchant-approved",
               "api-reference/webhooks/payment-successful",
               "api-reference/webhooks/payment-failed",

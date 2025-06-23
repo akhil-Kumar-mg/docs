@@ -1,5 +1,5 @@
 ---
-title: "PAYMENT_REFUNDED Webhook"
+title: "PAYMENT REFUNDED"
 description: "Technical reference for the PAYMENT_REFUNDED webhook event, including payload schema, field specifications, and implementation details."
 ---
 
@@ -43,49 +43,3 @@ This webhook is triggered when a payment is refunded to the customer through Exi
 | `data.refunds[].order_id` | `string` | ✅ | Order ID |
 | `data.refunds[].amount` | `number` | ✅ | Refund amount |
 | `data.refunds[].bank_arn` | `string` | ❌ | Bank ARN (Acquirer Reference Number) |
-
-## 🛠️ Implementation Examples
-
-### JavaScript/Node.js
-
-```javascript
-app.post('/webhook', (req, res) => {
-    const { event_type, data } = req.body;
-    
-    if (event_type === 'PAYMENT_REFUNDED') {
-        const { refunds } = data;
-        
-        refunds.forEach(async (refund) => {
-            const { payment_request_id, order_id, amount, bank_arn } = refund;
-            
-            // Update order status
-            await updateOrderStatus(order_id, 'refunded');
-            
-            // Send refund notification
-            await sendRefundNotification(order_id, amount);
-            
-            // Log refund
-            await logRefund({ payment_id: payment_request_id, order_id, amount });
-        });
-    }
-    
-    res.status(200).send('OK');
-});
-```
-
-## 📋 Business Logic Recommendations
-
-1. **Update Order Status** - Mark order as refunded
-2. **Notify Customer** - Send refund confirmation
-3. **Restore Inventory** - If applicable
-4. **Update Accounting** - Create refund entries
-5. **Log for Analytics** - Track refund events
-
-## ⚠️ Important Notes
-
-- **Idempotency**: Handle duplicate webhooks
-- **Multiple Refunds**: Process all refunds in the array
-- **Bank ARN**: May be null for some refund types
-- **Verification**: Always verify webhook signature
-
-For technical support, contact [engineering@eximpe.com](mailto:engineering@eximpe.com). 
