@@ -10,12 +10,12 @@
   },
   "servers": [
     {
-      "url": "https://api.eximpe.com",
-      "description": "Production server"
-    },
-    {
       "url": "https://api-staging.eximpe.com",
       "description": "Staging server"
+    },
+    {
+      "url": "https://api.eximpe.com",
+      "description": "Production server"
     }
   ],
   "security": [
@@ -299,8 +299,8 @@
                   "success": true,
                   "message": "Order fetched successfully",
                   "data": {
-                    "order_id": "OD3451762252",
-                    "reference_id": "TEST_41IBS11",
+                    "order_id": "OD9411897512",
+                    "reference_id": "TEST_FOB46D",
                     "amount": 1000.0,
                     "currency": "INR",
                     "mop_type": "UPI",
@@ -315,8 +315,8 @@
                         "state": "State",
                         "postal_code": "123456"
                       },
-                      "pan_number": null,
-                      "dob": null
+                      "pan_number": "BNYSS1111K",
+                      "dob": "2025-06-23"
                     },
                     "product": {
                       "name": "Sample Product",
@@ -326,16 +326,29 @@
                       "type_of_goods": "goods"
                     },
                     "invoice": {
-                      "number": "INV_2TIO9F",
-                      "date": "2025-06-22",
-                      "file": null
+                      "number": "IN-123123123",
+                      "date": "2025-06-24",
+                      "file": "https://eximpe.com/inv-8F3F51D2.pdf"
                     },
-                    "air_waybills": [],
-                    "payment_requests": [],
-                    "status": "payment_pending",
-                    "status_message": null,
-                    "created_at": "2025-06-22T20:43:05.466363Z",
-                    "is_testing": true
+                    "air_waybills": [
+                      {
+                        "number": "AWB-23343",
+                        "file": "https://eximpe.com/awb-8F3F51D2.pdf"
+                      }
+                    ],
+                    "payments": [
+                      {
+                        "payment_id": "PR1469384681",
+                        "mop_type": "UPI",
+                        "status": "captured",
+                        "status_message": null,
+                        "settlement_id": null,
+                        "created_at": "2025-06-23T10:44:14.344135Z"
+                      }
+                    ],
+                    "status": "payment_successful",
+                    "status_message": "Payment captured successfully",
+                    "created_at": "2025-06-23T10:44:11.702363Z"
                   }
                 }
               }
@@ -1828,7 +1841,7 @@
               }
             }
           },
-          "payment_requests": {
+          "payments": {
             "type": "array",
             "description": "Array of payment request information",
             "items": {
@@ -1967,7 +1980,7 @@
           }
         }
       },
-      "UpdateOrderRequest": {
+    "UpdateOrderRequest": {
         "type": "object",
         "description": "Request body for updating order - only include fields to update",
         "properties": {
