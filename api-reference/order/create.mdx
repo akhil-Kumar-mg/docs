@@ -1,17 +1,11 @@
 ---
 title: 'Create Order'
-description: 'Create a new order for payment processing.'
 openapi: '/openapi.json POST /pg/orders/'
 ---
-
-<Note>
-  This endpoint creates a new order for payment processing. The order will be created with the provided details and a session ID will be returned for payment processing.
-</Note>
 
 ## Overview
 
 The Create Order endpoint is the first step in the payment flow. It creates a new order with all the necessary details including buyer information, product details, and payment preferences.
 
-## Next Steps
 
 After creating an order successfully, you'll receive a `session_id` and `order_id`. Use the `session_id` to redirect the customer to the payment gateway for completing the transaction.
