@@ -1278,6 +1278,246 @@
           }
         }
       }
+    },
+    "/partners/merchants/{merchant_id}/": {
+      "get": {
+        "summary": "Get Merchant",
+        "description": "Retrieve the details of a specific merchant by its ID.",
+        "tags": ["Merchants"],
+        "security": [
+          { "clientAuth": [], "clientSecretAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "description": "The ID of the merchant to retrieve.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Merchant details retrieved successfully.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/GetMerchantResponse" },
+                "example": {
+                  "success": true,
+                  "message": "Sub-merchant details retrieved successfully",
+                  "data": {
+                    "id": "3604346598",
+                    "settlement_details": {
+                      "bank_account_number": "1234567890",
+                      "bank_account_name": "Example Company Ltd",
+                      "bank_swift_code": "ABCDUS33",
+                      "bank_name": "Example Bank",
+                      "bank_branch_name": "Main Branch",
+                      "bank_address": "456 Bank St",
+                      "bank_city": "New York",
+                      "bank_state": "NY",
+                      "bank_country": "United States",
+                      "bank_pincode": "10002",
+                      "routing_number": "021000021",
+                      "settlement_currency": null
+                    },
+                    "created_at": "2025-06-19T18:06:05.523720Z",
+                    "updated_at": "2025-06-19T18:06:05.523752Z",
+                    "invoice_file": null,
+                    "company_details": {
+                      "legal_name": "shrine",
+                      "brand_name": "TechSubshrine",
+                      "registration_number": "REG123456",
+                      "international_org_type": "PRIVATE_LIMITED",
+                      "tax_id": "TAX789012",
+                      "website": "https://techsub.example.com",
+                      "monthly_avg_transaction_value": "50000.00",
+                      "monthly_avg_transaction_volume": "100",
+                      "communication_address": "123 Tech Street",
+                      "communication_city": "San Francisco",
+                      "communication_state": "CA",
+                      "communication_country": "United States",
+                      "communication_pincode": "94105",
+                      "same_as_registered_address": true,
+                      "registered_address": "123 Tech Street",
+                      "registered_city": "San Francisco",
+                      "registered_state": "CA",
+                      "registered_country": "United States",
+                      "registered_pincode": "94105",
+                      "business_category": "TECHNOLOGY",
+                      "business_mode": "B2B",
+                      "commodity": "Software Services",
+                      "payment_terms": "NET_30",
+                      "hs_codes": [
+                        "84713010",
+                        "85423100"
+                      ],
+                      "category": "E-commerce",
+                      "description_of_products_and_services": "We provide comprehensive IT solutions including software development, cloud migration, data analytics, and digital transformation services for enterprises. Our solutions help businesses streamline operations, improve efficiency, and accelerate digital adoption.",
+                      "agreement_details": "global_company aggrement",
+                      "purpose_code": "P0101"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Merchant not found.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Merchant",
+        "description": "Update specific fields of an existing merchant.",
+        "tags": ["Merchants"],
+        "security": [
+          { "clientAuth": [], "clientSecretAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "description": "The ID of the merchant to update.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Merchant update request - only include fields to update",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMerchantRequest"
+              },
+              "example": {
+                "company_details": {
+                  "website": "https://updated-website.com",
+                  "monthly_avg_transaction_value": "75000.00",
+                  "description_of_products_and_services": "Updated description of services"
+                },
+                "settlement_details": {
+                  "bank_account_number": "9876543210",
+                  "bank_account_name": "Updated Company Ltd"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Merchant updated successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateMerchantResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Merchant updated successfully",
+                  "data": {
+                    "merchant_id": "3604346598",
+                    "updated_fields": ["company_details", "settlement_details"]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid parameters.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          },
+          "404": {
+            "description": "Merchant not found.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ErrorResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/partners/merchants/{merchant_id}/documents/": {
+      "patch": {
+        "summary": "Upload Merchant Document",
+        "description": "Upload a document for a merchant.",
+        "tags": ["Merchants"],
+        "security": [
+          { "clientAuth": [], "clientSecretAuth": [] }
+        ],
+        "parameters": [
+          {
+            "name": "merchant_id",
+            "in": "path",
+            "description": "The ID of the merchant to upload the document for.",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "description": "Document upload request. The body must be multipart/form-data.",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The file to upload."
+                  },
+                  "document_type": {
+                    "type": "string",
+                    "description": "Type of document (e.g., INVOICE)."
+                  }
+                },
+                "required": ["file", "document_type"]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document uploaded successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "message": { "type": "string" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "detail": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "success": true,
+                  "message": "Invoice uploaded successfully",
+                  "data": {
+                    "detail": "Invoice uploaded successfully"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2759,6 +2999,135 @@
             "type": "string",
             "format": "date-time",
             "description": "Merchant creation timestamp"
+          }
+        }
+      },
+      "GetMerchantResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "$ref": "#/components/schemas/MerchantDetails"
+          }
+        }
+      },
+      "MerchantDetails": {
+        "type": "object",
+        "required": [
+          "id",
+          "settlement_details",
+          "created_at",
+          "updated_at",
+          "invoice_file",
+          "company_details"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique merchant identifier"
+          },
+          "settlement_details": {
+            "$ref": "#/components/schemas/SettlementDetails"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Merchant creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Merchant update timestamp"
+          },
+          "invoice_file": {
+            "type": "string",
+            "description": "Invoice file URL"
+          },
+          "company_details": {
+            "$ref": "#/components/schemas/CompanyDetails"
+          }
+        }
+      },
+      "UpdateMerchantRequest": {
+        "type": "object",
+        "description": "Request body for updating merchant - only include fields to update",
+        "properties": {
+          "company_details": {
+            "type": "object",
+            "description": "Company details to update",
+            "properties": {
+              "website": {
+                "type": "string",
+                "format": "uri",
+                "description": "Updated company website URL"
+              },
+              "monthly_avg_transaction_value": {
+                "type": "string",
+                "description": "Updated average monthly transaction value"
+              },
+              "description_of_products_and_services": {
+                "type": "string",
+                "description": "Updated description of products and services"
+              }
+            }
+          },
+          "settlement_details": {
+            "type": "object",
+            "description": "Settlement details to update",
+            "properties": {
+              "bank_account_number": {
+                "type": "string",
+                "description": "Updated bank account number"
+              },
+              "bank_account_name": {
+                "type": "string",
+                "description": "Updated bank account name"
+              }
+            }
+          }
+        }
+      },
+      "UpdateMerchantResponse": {
+        "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
+          },
+          "message": {
+            "type": "string",
+            "description": "Response message"
+          },
+          "data": {
+            "type": "object",
+            "description": "Contains the updated merchant fields",
+            "properties": {
+              "merchant_id": {
+                "type": "string",
+                "description": "The ID of the updated merchant"
+              },
+              "updated_fields": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
           }
         }
       }

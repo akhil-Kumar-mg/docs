@@ -62,8 +62,7 @@
               "api-reference/merchant/list",
               "api-reference/merchant/get",
               "api-reference/merchant/update",
-              "api-reference/merchant/upload",
-              "api-reference/merchant/delete-invoice"
+              "api-reference/merchant/upload"
             ]
           },
           {
