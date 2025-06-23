@@ -4,34 +4,9 @@ description: 'Upload an invoice or other document for an existing order.'
 openapi: '/openapi.json POST /pg/orders/{order_id}/documents/'
 ---
 
-<Note>
-  This endpoint allows you to upload a document (like an invoice or air waybill) and associate it with an existing order.
-</Note>
-
 ## Overview
 
 The Upload Invoice endpoint is used to attach required documents to an order after it has been created. This is crucial for compliance and record-keeping. The request must be sent as `multipart/form-data`.
 
-## Authentication
-
-This endpoint requires authentication using your API credentials. Make sure to include the following headers in your request:
-- `X-Client-Id` - Your API client ID
-- `X-Client-Secret` - Your API client secret
-
-## Document Types
-
-You can specify the type of document you are uploading. Supported types include:
-- `invoice`
-- `air_waybill`
-- `other`
-
-## Usage Examples
-
-You can use this endpoint to:
-- Upload a customer invoice after an order is created.
-- Attach an Air Waybill document once a physical product is shipped.
-- Add any other required documentation to an order.
-
-<Button href="/api-reference/order/create" variant="primary">
-  Create an Order First
-</Button>
+This endpoint allows you to upload a document (like an invoice or air waybill), associated with an existing order.
+  
