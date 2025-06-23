@@ -12,6 +12,10 @@
     {
       "url": "https://api.eximpe.com",
       "description": "Production server"
+    },
+    {
+      "url": "https://api-staging.eximpe.com",
+      "description": "Staging server"
     }
   ],
   "security": [
@@ -21,7 +25,7 @@
     }
   ],
   "paths": {
-    "/pg/orders": {
+    "/pg/orders/": {
       "post": {
         "summary": "Create Order",
         "description": "Create a new order for payment processing.",
@@ -3135,17 +3139,20 @@
   "clientAuth": {
     "type": "apiKey",
     "name": "X-Client-ID",
-    "in": "header"
+    "in": "header",
+    "description": "Client app ID. You can find your app id in the merchant dashboard."
   },
   "clientSecretAuth": {
     "type": "apiKey",
     "name": "X-Client-Secret",
-    "in": "header"
+    "in": "header",
+    "description": "Client secret key. You can find your secret in the merchant dashboard."
   },
   "merchantAuth": {
     "type": "apiKey",
     "name": "X-Merchant-ID",
-    "in": "header"
+    "in": "header",
+    "description": "Merchant ID. You can find your merchant ID in the merchant section of the merchant dashboard."
   }
 }
   }
