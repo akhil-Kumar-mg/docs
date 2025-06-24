@@ -13,6 +13,10 @@ description: "Technical reference for the MERCHANT_APPROVED webhook event, inclu
 
 This webhook is triggered when a merchant account is approved and can start collecting payments through EximPe.
 
+<Info>
+  **Important**: This webhook indicates that your merchant account is now fully operational and ready to process live payments. You should switch from sandbox to production API keys at this point.
+</Info>
+
 ---
 
 ## 📊 Payload Schema
@@ -52,5 +56,3 @@ This webhook is triggered when a merchant account is approved and can start coll
 | `merchant_id` | `string` | ✅ | Unique identifier for the approved merchant |
 | `merchant_legal_name` | `string` | ✅ | Legal business name of the merchant |
 | `merchant_trade_name` | `string` | ✅ | Trading/brand name of the merchant |
-
---- 
