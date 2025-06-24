@@ -3,7 +3,7 @@ title: "PAYMENT REFUNDED"
 description: "Technical reference for the PAYMENT_REFUNDED webhook event, including payload schema, field specifications, and implementation details."
 ---
 
-## 📋 Event Overview
+## Event Overview
 
 **Event Type**: `PAYMENT_REFUNDED`  
 **Category**: Payment  
@@ -11,13 +11,16 @@ description: "Technical reference for the PAYMENT_REFUNDED webhook event, includ
 
 This webhook is triggered when a payment is refunded to the customer through EximPe.
 
-## 📊 Payload Schema
+## Payload Schema
 
-```json
+<CodeGroup>
+
+```json Example Payload
 {
     "event_type": "PAYMENT_REFUNDED",
     "event_time": "2024-02-15 16:53:15",
     "version": "1.0",
+    "sequence_number": "a3791670-7c5d-4a86-aa7a-fe35e58a9dbb",
     "data": {
         "refunds": [
             {
@@ -31,15 +34,64 @@ This webhook is triggered when a payment is refunded to the customer through Exi
 }
 ```
 
-## 🔍 Field Specifications
+</CodeGroup>
 
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `event_type` | `string` | ✅ | Always `"PAYMENT_REFUNDED"` |
-| `event_time` | `string` | ✅ | Timestamp when the event occurred |
-| `version` | `string` | ✅ | Webhook payload version (currently "1.0") |
-| `data.refunds` | `array` | ✅ | Array of refund objects |
-| `data.refunds[].payment_request_id` | `string` | ✅ | Original payment request ID |
-| `data.refunds[].order_id` | `string` | ✅ | Order ID |
-| `data.refunds[].amount` | `number` | ✅ | Refund amount |
-| `data.refunds[].bank_arn` | `string` | ❌ | Bank ARN (Acquirer Reference Number) |
+## Field Specifications
+
+<Tabs>
+  <Tab title="Root Level Fields">
+    <ParamField path="event_type" type="string" required>
+      Always `"PAYMENT_REFUNDED"` for this webhook event
+    </ParamField>
+
+    <ParamField path="event_time" type="string" required>
+      Timestamp when the event occurred in YYYY-MM-DD HH:MM:SS format
+      
+      **Example**: `"2024-02-15 16:53:15"`
+    </ParamField>
+
+    <ParamField path="version" type="string" required>
+      Webhook payload version (currently "1.0")
+    </ParamField>
+
+    <ParamField path="sequence_number" type="string" required>
+      Unique identifier for the event instance
+      
+      **Example**: `"a3791670-7c5d-4a86-aa7a-fe35e58a9dbb"`
+    </ParamField>
+
+    <ParamField path="data" type="object" required>
+      Event-specific data payload containing refund details
+    </ParamField>
+  </Tab>
+
+  <Tab title="Data Object Fields">
+    <ParamField path="data.refunds" type="array" required>
+      Array of refund objects containing the refund information
+    </ParamField>
+
+    <ParamField path="data.refunds[].payment_request_id" type="string" required>
+      Original payment request ID that was refunded
+      
+      **Example**: `"PR7485664995"`
+    </ParamField>
+
+    <ParamField path="data.refunds[].order_id" type="string" required>
+      Order ID associated with the refund
+      
+      **Example**: `"OD6085456489"`
+    </ParamField>
+
+    <ParamField path="data.refunds[].amount" type="number" required>
+      Refund amount
+      
+      **Example**: `1000`
+    </ParamField>
+
+    <ParamField path="data.refunds[].bank_arn" type="string">
+      Bank ARN (Acquirer Reference Number) - may be null
+      
+      **Example**: `null`
+    </ParamField>
+  </Tab>
+</Tabs>

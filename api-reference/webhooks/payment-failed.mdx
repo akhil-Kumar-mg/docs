@@ -5,7 +5,7 @@ description: "Technical reference for the PAYMENT_FAILED webhook event, includin
 
 ---
 
-## 📋 Event Overview
+## Event Overview
 
 **Event Type**: `PAYMENT_FAILED`  
 **Category**: Payment  
@@ -15,13 +15,16 @@ This webhook is triggered when a customer's payment attempt fails through EximPe
 
 ---
 
-## 📊 Payload Schema
+## Payload Schema
 
-```json
+<CodeGroup>
+
+```json Example Payload
 {
     "event_type": "PAYMENT_FAILED",
     "event_time": "2024-02-15 16:53:15Z",
     "version": "1.0",
+    "sequence_number": "a3791670-7c5d-4a86-aa7a-fe35e58a9dbb",
     "data": {
         "id": "PR2594743053",
         "merchant": {
@@ -50,39 +53,142 @@ This webhook is triggered when a customer's payment attempt fails through EximPe
 }
 ```
 
+</CodeGroup>
+
 ---
 
-## 🔍 Field Specifications
+## Field Specifications
 
-### Root Level Fields
+<Tabs>
+  <Tab title="Root Level Fields">
+    <ParamField path="event_type" type="string" required>
+      Always `"PAYMENT_FAILED"` for this webhook event
+    </ParamField>
 
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `event_type` | `string` | ✅ | Always `"PAYMENT_FAILED"` |
-| `event_time` | `string` | ✅ | Timestamp when the event occurred (ISO 8601 format) |
-| `version` | `string` | ✅ | Webhook payload version (currently "1.0") |
-| `data` | `object` | ✅ | Event-specific data payload |
+    <ParamField path="event_time" type="string" required>
+      Timestamp when the event occurred in ISO 8601 format
+      
+      **Example**: `"2024-02-15 16:53:15Z"`
+    </ParamField>
 
-### Data Object Fields
+    <ParamField path="version" type="string" required>
+      Webhook payload version (currently "1.0")
+    </ParamField>
 
-| **Field** | **Type** | **Required** | **Description** |
-|-----------|----------|--------------|-----------------|
-| `id` | `string` | ✅ | Payment request ID |
-| `merchant.id` | `string` | ✅ | Merchant ID |
-| `merchant.name` | `string` | ✅ | Merchant name |
-| `reference_id` | `string` | ✅ | Reference ID for the payment |
-| `buyer.name` | `string` | ✅ | Buyer's name |
-| `buyer.email` | `string` | ✅ | Buyer's email |
-| `buyer.phone` | `string` | ✅ | Buyer's phone number |
-| `order_id` | `string` | ✅ | Order ID |
-| `amount.amount` | `number` | ✅ | Payment amount |
-| `amount.total_amount` | `number` | ✅ | Total amount including fees |
-| `amount.currency` | `string` | ✅ | Currency code |
-| `created_at` | `string` | ✅ | ISO 8601 creation timestamp |
-| `status` | `string` | ✅ | Payment status (FAILED) |
-| `comment` | `string` | ✅ | Failure reason or comment |
-| `preferred_method` | `string` | ✅ | Preferred payment method |
-| `mop_type` | `string` | ✅ | Method of payment type |
-| `settlement_status` | `string` | ✅ | Current settlement status |
+    <ParamField path="sequence_number" type="string" required>
+      Unique identifier for the event instance
+      
+      **Example**: `"a3791670-7c5d-4a86-aa7a-fe35e58a9dbb"`
+    </ParamField>
+
+    <ParamField path="data" type="object" required>
+      Event-specific data payload containing failed payment transaction details
+    </ParamField>
+  </Tab>
+
+  <Tab title="Data Object Fields">
+    <ParamField path="data.id" type="string" required>
+      Payment request ID
+      
+      **Example**: `"PR2594743053"`
+    </ParamField>
+
+    <ParamField path="data.merchant.id" type="string" required>
+      Merchant ID
+      
+      **Example**: `"6889114728"`
+    </ParamField>
+
+    <ParamField path="data.merchant.name" type="string" required>
+      Merchant name
+      
+      **Example**: `"Herring Lt"`
+    </ParamField>
+
+    <ParamField path="data.reference_id" type="string" required>
+      Reference ID for the payment
+      
+      **Example**: `"TEST_UAYJWL"`
+    </ParamField>
+
+    <ParamField path="data.buyer.name" type="string" required>
+      Buyer's name
+      
+      **Example**: `"John Doe"`
+    </ParamField>
+
+    <ParamField path="data.buyer.email" type="string" required>
+      Buyer's email address
+      
+      **Example**: `"john.doe@example.com"`
+    </ParamField>
+
+    <ParamField path="data.buyer.phone" type="string" required>
+      Buyer's phone number
+      
+      **Example**: `"+919876543210"`
+    </ParamField>
+
+    <ParamField path="data.order_id" type="string" required>
+      Order ID
+      
+      **Example**: `"OD3119565151"`
+    </ParamField>
+
+    <ParamField path="data.amount.amount" type="number" required>
+      Payment amount
+      
+      **Example**: `1000.0`
+    </ParamField>
+
+    <ParamField path="data.amount.total_amount" type="number" required>
+      Total amount including fees
+      
+      **Example**: `1000.0`
+    </ParamField>
+
+    <ParamField path="data.amount.currency" type="string" required>
+      Currency code
+      
+      **Example**: `"INR"`
+    </ParamField>
+
+    <ParamField path="data.created_at" type="string" required>
+      ISO 8601 creation timestamp
+      
+      **Example**: `"2025-06-23T15:43:29.632246Z"`
+    </ParamField>
+
+    <ParamField path="data.status" type="string" required>
+      Payment status (FAILED for failed payments)
+      
+      **Example**: `"FAILED"`
+    </ParamField>
+
+    <ParamField path="data.comment" type="string" required>
+      Failure reason or comment
+      
+      **Example**: `"Invalid mpin"`
+    </ParamField>
+
+    <ParamField path="data.preferred_method" type="string" required>
+      Preferred payment method
+      
+      **Example**: `"UPI"`
+    </ParamField>
+
+    <ParamField path="data.mop_type" type="string" required>
+      Method of payment type
+      
+      **Example**: `"UPI"`
+    </ParamField>
+
+    <ParamField path="data.settlement_status" type="string" required>
+      Current settlement status
+      
+      **Example**: `"PAYMENT_PENDING"`
+    </ParamField>
+  </Tab>
+</Tabs>
 
 ---
