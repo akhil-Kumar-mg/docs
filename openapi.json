@@ -554,7 +554,7 @@
         }
       }
     },
-    "/payments/": {
+    "/pg/payments/": {
       "get": {
         "summary": "List Payments",
         "description": "Retrieve a list of payments with optional filtering.",
@@ -733,7 +733,7 @@
         }
       }
     },
-    "/payments/{payment_id}/": {
+    "/pg/payments/{payment_id}/": {
       "get": {
         "summary": "Get Payment",
         "description": "Retrieve the details of a specific payment by its ID.",
