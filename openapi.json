@@ -577,7 +577,7 @@
             }
           },
           {
-            "name": "merchant",
+            "name": "merchant_id",
             "in": "query",
             "description": "Filter by merchant ID.",
             "schema": {
@@ -616,33 +616,10 @@
               "type": "string",
               "enum": [
                 "UPI",
-                "CARD",
-                "NETBANKING",
-                "WALLET"
-              ]
-            }
-          },
-          {
-            "name": "collection_mode",
-            "in": "query",
-            "description": "Filter by collection mode.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "HOSTED",
-                "API"
-              ]
-            }
-          },
-          {
-            "name": "txn_type",
-            "in": "query",
-            "description": "Filter by transaction type.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "SALE",
-                "REFUND"
+                "CREDIT_CARD",
+                "DEBIT_CARD",
+                "NET_BANKING",
+                "QR"
               ]
             }
           },
@@ -653,22 +630,9 @@
             "schema": {
               "type": "string",
               "enum": [
-                "PAYMENT_PENDING",
-                "PAYMENT_SUCCESSFUL",
-                "PAYMENT_FAILED"
-              ]
-            }
-          },
-          {
-            "name": "payment_gateway",
-            "in": "query",
-            "description": "Filter by payment gateway.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "STRIPE",
-                "RAZORPAY",
-                "CASHFREE"
+                "PENDING",
+                "CAPTURED",
+                "FAILED"
               ]
             }
           },
@@ -689,24 +653,6 @@
               "type": "string",
               "format": "date"
             }
-          },
-          {
-            "name": "from_payment_completed_date",
-            "in": "query",
-            "description": "Filter by payment completion date (from).",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "to_payment_completed_date",
-            "in": "query",
-            "description": "Filter by payment completion date (to).",
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
           }
         ],
         "responses": {
@@ -716,6 +662,42 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ListPaymentsResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Domestic payment requests retrieved successfully",
+                  "data": {
+                    "count": 15,
+                    "page": 1,
+                    "page_size": 10,
+                    "next": "https://api.eximpe.com/pg/payments/?page=2&page_size=10",
+                    "previous": null,
+                    "results": [
+                      {
+                        "id": "PR1469384681",
+                        "merchant": {
+                          "id": "4455704961",
+                          "name": "Acme Corp"
+                        },
+                        "reference_id": "ACME_ORD_1001",
+                        "buyer": {
+                          "name": "Rahul Mehta",
+                          "email": "rahul.mehta@acme.com",
+                          "phone": "+919812345678"
+                        },
+                        "payment_id": "OD9411897512",
+                        "amount": {
+                          "amount": "1000",
+                          "total_amount": "1000",
+                          "currency": "INR"
+                        },
+                        "created_at": "2025-06-23T10:44:14.344135Z",
+                        "comment": null,
+                        "mop_type": "UPI",
+                        "status": "CAPTURED"
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -2161,124 +2143,107 @@
       "ListPaymentsResponse": {
         "type": "object",
         "required": [
-          "count",
-          "page",
-          "page_size",
-          "next",
-          "previous",
-          "results"
+          "success",
+          "message",
+          "data"
         ],
         "properties": {
-          "count": {
-            "type": "integer",
-            "description": "Total number of payments"
+          "success": {
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
           },
-          "page": {
-            "type": "integer",
-            "description": "Current page number"
-          },
-          "page_size": {
-            "type": "integer",
-            "description": "Number of payments per page"
-          },
-          "next": {
+          "message": {
             "type": "string",
-            "nullable": true,
-            "description": "URL for the next page of results"
+            "description": "Response message"
           },
-          "previous": {
-            "type": "string",
-            "nullable": true,
-            "description": "URL for the previous page of results"
-          },
-          "results": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Payment"
+          "data": {
+            "type": "object",
+            "required": [
+              "count",
+              "page",
+              "page_size",
+              "next",
+              "previous",
+              "results"
+            ],
+            "properties": {
+              "count": {
+                "type": "integer",
+                "description": "Total number of payments"
+              },
+              "page": {
+                "type": "integer",
+                "description": "Current page number"
+              },
+              "page_size": {
+                "type": "integer",
+                "description": "Number of payments per page"
+              },
+              "next": {
+                "type": "string",
+                "nullable": true,
+                "description": "URL for the next page of results"
+              },
+              "previous": {
+                "type": "string",
+                "nullable": true,
+                "description": "URL for the previous page of results"
+              },
+              "results": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/PaymentInList"
+                }
+              }
             }
           }
         }
       },
-      "Payment": {
+      "PaymentInList": {
         "type": "object",
         "required": [
+          "id",
+          "merchant",
+          "reference_id",
+          "buyer",
           "payment_id",
-          "order_id",
           "amount",
-          "currency",
-          "status",
-          "created_at"
+          "created_at",
+          "mop_type",
+          "status"
         ],
         "properties": {
           "payment_id": {
             "type": "string",
-            "description": "Unique payment identifier"
+            "description": "Unique payment request identifier"
           },
-          "order_id": {
+          "merchant": {
+            "type": "object",
+            "required": [
+              "id",
+              "name"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Merchant ID"
+              },
+              "name": {
+                "type": "string",
+                "description": "Merchant name"
+              }
+            }
+          },
+          "reference_id": {
             "type": "string",
-            "description": "Unique order identifier"
-          },
-          "amount": {
-            "type": "number",
-            "description": "Payment amount"
-          },
-          "currency": {
-            "type": "string",
-            "description": "3-letter ISO currency code"
-          },
-          "status": {
-            "type": "string",
-            "description": "Payment status",
-            "enum": [
-              "payment_pending",
-              "payment_processing",
-              "payment_successful",
-              "payment_failed",
-              "cancelled"
-            ]
-          },
-          "created_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Payment creation timestamp"
-          },
-          "updated_at": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Payment update timestamp"
-          },
-          "mop_type": {
-            "type": "string",
-            "description": "Method of payment",
-            "enum": [
-              "UPI",
-              "CARD",
-              "NETBANKING",
-              "WALLET"
-            ]
-          },
-          "collection_mode": {
-            "type": "string",
-            "description": "Payment collection mode"
-          },
-          "payment_gateway": {
-            "type": "string",
-            "description": "Payment gateway used"
-          },
-          "txn_type": {
-            "type": "string",
-            "description": "Transaction type"
-          },
-          "payment_completed_date": {
-            "type": "string",
-            "format": "date-time",
-            "description": "Payment completion timestamp"
+            "description": "Order reference identifier"
           },
           "buyer": {
             "type": "object",
             "required": [
               "name",
-              "address"
+              "email",
+              "phone"
             ],
             "properties": {
               "name": {
@@ -2293,59 +2258,60 @@
               "phone": {
                 "type": "string",
                 "description": "Buyer's phone number with country code"
-              },
-              "address": {
-                "$ref": "#/components/schemas/Address"
               }
             }
           },
-          "product": {
-            "$ref": "#/components/schemas/Product"
-          },
-          "invoice": {
+          "amount": {
             "type": "object",
+            "required": [
+              "amount",
+              "total_amount",
+              "currency"
+            ],
             "properties": {
-              "number": {
+              "amount": {
                 "type": "string",
-                "description": "Invoice number"
+                "description": "Payment amount"
               },
-              "date": {
+              "total_amount": {
                 "type": "string",
-                "format": "date",
-                "description": "Invoice date in YYYY-MM-DD format"
+                "description": "Total payment amount"
               },
-              "file": {
+              "currency": {
                 "type": "string",
-                "nullable": true,
-                "description": "Invoice file URL"
+                "description": "3-letter ISO currency code"
               }
             }
           },
-          "air_waybills": {
-            "type": "array",
-            "description": "Array of air waybill information",
-            "items": {
-              "type": "object",
-              "properties": {
-                "number": {
-                  "type": "string",
-                  "description": "Air waybill number"
-                },
-                "file": {
-                  "type": "string",
-                  "description": "Air waybill file URL"
-                }
-              }
-            }
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Payment creation timestamp"
           },
-          "status_message": {
+          "comment": {
             "type": "string",
             "nullable": true,
-            "description": "Payment status message"
+            "description": "Additional comment or status message"
           },
-          "is_testing": {
-            "type": "boolean",
-            "description": "Whether this is a test payment"
+          "mop_type": {
+            "type": "string",
+            "description": "Method of payment",
+            "enum": [
+              "UPI",
+              "CREDIT_CARD",
+              "DEBIT_CARD",
+              "NET_BANKING",
+              "QR"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Payment status",
+            "enum": [
+              "PENDING",
+              "CAPTURED",
+              "FAILED"
+            ]
           }
         }
       },

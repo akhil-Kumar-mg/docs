@@ -12,14 +12,10 @@ You can combine multiple filters to create a precise query. All filter parameter
 
 ### Available Filters
 - `currency`
-- `merchant`
+- `merchant_id`
 - `payment_id`
 - `reference_id`
 - `buyer_name`
-- `mop_type`: (e.g., `UPI`, `CARD`)
-- `collection_mode`: (e.g., `HOSTED`, `API`)
-- `txn_type`: (e.g., `SALE`, `REFUND`)
-- `status`: (e.g., `PAYMENT_PENDING`, `PAYMENT_SUCCESSFUL`)
-- `payment_gateway`: (e.g., `STRIPE`, `RAZORPAY`)
+- `mop_type`: (e.g., `CREDIT_CARD`, `DEBIT_CARD`, `UPI`, `NET_BANKING`, `QR`)
+- `status`: ( `PENDING`, `CAPTURED`, `FAILED`)
 - `from_created_date` / `to_created_date`
-- `from_payment_completed_date` / `to_payment_completed_date`
