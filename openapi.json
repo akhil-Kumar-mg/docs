@@ -515,7 +515,7 @@
                     ],
                     "status": "payment_successful",
                     "status_message": "Payment captured successfully",
-                    "created_at": "2025-06-23T10:44:11.702363Z",
+                    "created_at": "2025-06-23T10:44:11.702363Z"
                   }
                 }
               }
@@ -746,6 +746,74 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/GetPaymentResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Domestic payment request details retrieved successfully",
+                  "data": {
+                    "payment_id": "PR3828502708",
+                    "order": {
+                      "order_id": "OD6530655496",
+                      "reference_id": "TEST_9P81ZL",
+                      "amount": 1000.0,
+                      "currency": "INR",
+                      "mop_type": "UPI",
+                      "buyer": {
+                        "name": "John Doe",
+                        "email": "john.doe@example.com",
+                        "phone": "+919876543210",
+                        "address": {
+                          "line_1": "123 Main Street",
+                          "line_2": "Apt 4B",
+                          "city": "City",
+                          "state": "State",
+                          "postal_code": "123456"
+                        },
+                        "pan_number": "BNYPG1231L",
+                        "dob": "2025-06-19"
+                      },
+                      "product": {
+                        "name": "Sample Product",
+                        "description": "This is a sample product description",
+                        "hs_code": "98051000",
+                        "hs_code_description": "Portable automatic data processing machines",
+                        "type_of_goods": "goods"
+                      },
+                      "status": "payment_successful",
+                      "status_message": "Payment captured successfully",
+                      "created_at": "2025-06-19T09:17:56.338741Z"
+                    },
+                    "settlement": {
+                      "id": "ST4353980017",
+                      "settlement_id": "d42eda3f-41b6-4d82-add5-2665181f9eea",
+                      "settlement_completed_date": "2025-06-20T08:06:59.293548Z",
+                      "settlement_amount": 1000.0,
+                      "settlement_currency": "USD",
+                      "utr_number": "092dc30a-4f19-4318-9798-ad08b48801f6",
+                      "number_of_transactions": 1,
+                      "created_date": "2025-06-20T08:06:59.307056Z"
+                    },
+                    "refund": [
+                      {
+                        "refund_id": "RF8370660295",
+                        "refund_amount": 12.0,
+                        "refund_status": "INITIATED",
+                        "refunded_at": null,
+                        "message": "No action status found",
+                        "payment_id": "PR3828502708"
+                      }
+                    ],
+                    "collection_mode": "HOSTED_PAYMENT",
+                    "mop_type": "UPI",
+                    "bank_ref_num": "OD6530655496-PR3828502708",
+                    "mop_detail": {
+                      "upi_id": "pay@payu"
+                    },
+                    "payment_completed_at": "2025-06-19T14:48:11.000000Z",
+                    "status": "CAPTURED",
+                    "status_message": "Invoice and AWB file missing",
+                    "created_date": "2025-06-19T09:18:10.637579Z"
+                  }
                 }
               }
             }
@@ -1375,7 +1443,7 @@
                       "bank_country": "United States",
                       "bank_pincode": "10002",
                       "routing_number": "021000021",
-                      "settlement_currency": null
+                      "settlement_currency": "USD"
                     },
                     "created_at": "2025-06-19T18:06:05.523720Z",
                     "updated_at": "2025-06-19T18:06:05.523752Z",
@@ -1612,9 +1680,10 @@
             "description": "Method of payment type (e.g., UPI)",
             "enum": [
               "UPI",
-              "CARD",
+              "CREDIT_CARD",
               "NETBANKING",
-              "WALLET"
+              "DEBIT_CARD",
+              "QR"
             ]
           },
           "buyer": {
@@ -1802,9 +1871,10 @@
             "description": "Method of payment type",
             "enum": [
               "UPI",
-              "CARD",
+              "CREDIT_CARD",
               "NETBANKING",
-              "WALLET"
+              "DEBIT_CARD",
+              "QR"
             ]
           },
           "buyer": {
@@ -1893,11 +1963,9 @@
             "type": "string",
             "description": "Order status",
             "enum": [
-              "payment_pending",
-              "payment_processing",
-              "payment_successful",
-              "payment_failed",
-              "cancelled"
+              "PAYMENT_PENDING",
+              "PAYMENT_SUCCESSFUL",
+              "FAILED"
             ]
           },
           "status_message": {
@@ -3160,9 +3228,10 @@
             "description": "Method of payment type",
             "enum": [
               "UPI",
-              "CARD",
+              "CREDIT_CARD",
               "NETBANKING",
-              "WALLET"
+              "DEBIT_CARD",
+              "QR"
             ]
           },
           "status": {
@@ -3209,6 +3278,232 @@
             "type": "string",
             "format": "date-time",
             "description": "Payment request creation timestamp"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "required": [
+          "payment_id",
+          "order",
+          "settlement",
+          "refund",
+          "collection_mode",
+          "mop_type",
+          "status",
+          "created_date"
+        ],
+        "properties": {
+          "payment_id": {
+            "type": "string",
+            "description": "Unique payment request identifier"
+          },
+          "order": {
+            "type": "object",
+            "required": [
+              "order_id",
+              "reference_id",
+              "amount",
+              "currency",
+              "status",
+              "created_at"
+            ],
+            "properties": {
+              "order_id": {
+                "type": "string",
+                "description": "Unique order identifier"
+              },
+              "reference_id": {
+                "type": "string",
+                "description": "Order reference identifier"
+              },
+              "amount": {
+                "type": "number",
+                "format": "float",
+                "description": "Order amount"
+              },
+              "currency": {
+                "type": "string",
+                "description": "3-letter ISO currency code"
+              },
+              "mop_type": {
+                "type": "string",
+                "description": "Method of payment type",
+                "enum": [
+                  "UPI",
+                  "CREDIT_CARD",
+                  "NETBANKING",
+                  "DEBIT_CARD",
+                  "QR"
+                ]
+              },
+              "buyer": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "address"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Buyer's full name"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "description": "Buyer's email address"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Buyer's phone number with country code"
+                  },
+                  "address": {
+                    "$ref": "#/components/schemas/Address"
+                  },
+                  "pan_number": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Buyer's PAN number"
+                  },
+                  "dob": {
+                    "type": "string",
+                    "format": "date",
+                    "nullable": true,
+                    "description": "Buyer's date of birth"
+                  }
+                }
+              },
+              "product": {
+                "$ref": "#/components/schemas/Product"
+              },
+              "status": {
+                "type": "string",
+                "description": "Order status",
+                "enum": [
+                  "PAYMENT_PENDING",
+                  "PAYMENT_SUCCESSFUL",
+                  "FAILED"
+                ]
+              },
+              "status_message": {
+                "type": "string",
+                "nullable": true,
+                "description": "Order status message"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Order creation timestamp"
+              }
+            }
+          },
+          "settlement": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "Settlement ID"
+              },
+              "settlement_id": {
+                "type": "string",
+                "description": "Unique settlement identifier"
+              },
+              "settlement_completed_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Settlement completion timestamp"
+              },
+              "settlement_amount": {
+                "type": "number",
+                "format": "float",
+                "description": "Settlement amount"
+              },
+              "settlement_currency": {
+                "type": "string",
+                "description": "Settlement currency"
+              },
+              "utr_number": {
+                "type": "string",
+                "description": "UTR number for the settlement"
+              },
+              "number_of_transactions": {
+                "type": "integer",
+                "description": "Number of transactions in settlement"
+              },
+              "created_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Settlement creation timestamp"
+              }
+            }
+          },
+          "refund": {
+            "type": "array",
+            "description": "Array of refunds associated with this payment",
+            "items": {
+              "$ref": "#/components/schemas/Refund"
+            }
+          },
+          "collection_mode": {
+            "type": "string",
+            "description": "Payment collection mode",
+            "enum": [
+              "HOSTED_PAYMENT",
+              "DIRECT_PAYMENT"
+            ]
+          },
+          "mop_type": {
+            "type": "string",
+            "description": "Method of payment",
+            "enum": [
+              "UPI",
+              "CREDIT_CARD",
+              "DEBIT_CARD",
+              "NET_BANKING",
+              "QR"
+            ]
+          },
+          "bank_ref_num": {
+            "type": "string",
+            "nullable": true,
+            "description": "Bank reference number"
+          },
+          "mop_detail": {
+            "type": "object",
+            "nullable": true,
+            "description": "Method of payment specific details",
+            "properties": {
+              "upi_id": {
+                "type": "string",
+                "description": "UPI ID for UPI payments"
+              }
+            }
+          },
+          "payment_completed_at": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "Payment completion timestamp"
+          },
+          "status": {
+            "type": "string",
+            "description": "Payment status",
+            "enum": [
+              "PENDING",
+              "CAPTURED",
+              "FAILED"
+            ]
+          },
+          "status_message": {
+            "type": "string",
+            "nullable": true,
+            "description": "Payment status message"
+          },
+          "created_date": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Payment creation timestamp"
           }
         }
       }
