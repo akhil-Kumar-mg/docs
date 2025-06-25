@@ -1099,20 +1099,6 @@
               "type": "string",
               "format": "date"
             }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "description": "Filter settlements by status.",
-            "schema": {
-              "type": "string",
-              "enum": [
-                "PENDING",
-                "PROCESSING",
-                "COMPLETED",
-                "FAILED"
-              ]
-            }
           }
         ],
         "responses": {
@@ -1124,20 +1110,29 @@
                   "$ref": "#/components/schemas/ListSettlementsResponse"
                 },
                 "example": {
-                  "count": 1,
-                  "page": 1,
-                  "page_size": 250,
-                  "next": null,
-                  "previous": null,
-                  "results": [
-                    {
-                      "settlement_id": "ST4353980017",
-                      "utr_number": "092dc30a-4f19-4318-9798-ad08b48801f6",
-                      "settlement_completed_date": "2025-06-20T08:06:59.293548Z",
-                      "forex_rate": 86,
-                      "settlement_amount": 1000
-                    }
-                  ]
+                  "success": true,
+                  "message": "Settlements fetched successfully",
+                  "data": {
+                    "settlement_id": "ST4353980017",
+                    "utr_number": "092dc30a-4f19-4318-9798-ad08b48801f6",
+                    "settlement_completed_date": "2025-06-20T08:06:59.293548Z",
+                    "forex_rate_cents": 8600,
+                    "settlement_amount_cents": 100000,
+                    "settlement_currency": "USD",
+                    "transactions": [
+                      {
+                        "settlement_type": "capture",
+                        "transaction_id": "PR3828502708",
+                        "transaction_amount": 1000.0,
+                        "merchant_service_fee": 0.0,
+                        "merchant_service_tax": 0.0,
+                        "merchant_net_amount": 1000.0,
+                        "mop_type": "UPI",
+                        "transaction_currency": "INR",
+                        "forex_rate": 86.0
+                      }
+                    ]
+                  }
                 }
               }
             }
@@ -1182,31 +1177,22 @@
                   "message": "Settlements fetched successfully",
                   "data": {
                     "settlement_id": "ST4353980017",
+                    "utr_number": "092dc30a-4f19-4318-9798-ad08b48801f6",
                     "settlement_completed_date": "2025-06-20T08:06:59.293548Z",
+                    "forex_rate_cents": 8600,
+                    "settlement_amount_cents": 100000,
+                    "settlement_currency": "USD",
                     "transactions": [
                       {
                         "settlement_type": "capture",
-                        "settlement_id": "ST4353980017",
-                        "settlement_completed_date": "2025-06-20T08:06:59.293548Z",
-                        "settlement_currency": "INR",
-                        "transaction_amount": 1000,
-                        "merchant_service_fee_cents": 0,
-                        "merchant_service_tax_cents": 0,
-                        "merchant_net_amount": 1000,
-                        "sgst": 0,
-                        "cgst": 0,
-                        "igst": 0,
-                        "merchant_transaction_id": "dd0de58b-fc17-4efa-b1b3-6e81cb9df98b",
-                        "card_type": "domestic",
-                        "offer_service_fee": 0,
-                        "offer_service_tax": 0,
-                        "forex_rate": 86,
-                        "discount": 0,
-                        "additional_tdr_fee": 0,
-                        "additional_tdr_tax": 0,
-                        "total_processing_fee": 0,
-                        "total_service_tax": 0,
-                        "transaction_currency": "INR"
+                        "transaction_id": "PR3828502708",
+                        "transaction_amount": 1000.0,
+                        "merchant_service_fee": 0.0,
+                        "merchant_service_tax": 0.0,
+                        "merchant_net_amount": 1000.0,
+                        "mop_type": "UPI",
+                        "transaction_currency": "INR",
+                        "forex_rate": 86.0
                       }
                     ]
                   }
@@ -2462,11 +2448,6 @@
             "nullable": true,
             "description": "A message providing more detail about the refund status."
           },
-          "transaction_id": {
-            "type": "string",
-            "nullable": true,
-            "description": "The transaction ID associated with the refund."
-          },
           "bank_ref_num": {
             "type": "string",
             "nullable": true,
@@ -2574,10 +2555,26 @@
             "type": "string",
             "description": "Unique identifier for the settlement."
           },
+          "utr_number": {
+            "type": "string",
+            "description": "UTR (Unique Transaction Reference) number for the settlement."
+          },
           "settlement_completed_date": {
             "type": "string",
             "format": "date-time",
             "description": "The timestamp of when the settlement was completed."
+          },
+          "forex_rate_cents": {
+            "type": "integer",
+            "description": "Forex rate in cents (e.g., 8600 represents 86.00)."
+          },
+          "settlement_amount_cents": {
+            "type": "integer",
+            "description": "Settlement amount in cents (e.g., 100000 represents 1000.00)."
+          },
+          "settlement_currency": {
+            "type": "string",
+            "description": "Currency code for the settlement amount."
           },
           "transactions": {
             "type": "array",
@@ -2591,84 +2588,52 @@
         "type": "object",
         "properties": {
           "settlement_type": {
-            "type": "string"
-          },
-          "settlement_id": {
-            "type": "string"
-          },
-          "settlement_completed_date": {
             "type": "string",
-            "format": "date-time"
+            "description": "Type of settlement transaction (e.g., capture, refund)"
           },
-          "settlement_currency": {
-            "type": "string"
+          "transaction_id": {
+            "type": "string",
+            "description": "Unique identifier for the transaction"
           },
           "transaction_amount": {
             "type": "number",
-            "format": "float"
+            "format": "float",
+            "description": "Transaction amount"
           },
-          "merchant_service_fee_cents": {
-            "type": "integer"
+          "merchant_service_fee": {
+            "type": "number",
+            "format": "float",
+            "description": "Merchant service fee"
           },
-          "merchant_service_tax_cents": {
-            "type": "integer"
+          "merchant_service_tax": {
+            "type": "number",
+            "format": "float",
+            "description": "Merchant service tax"
           },
           "merchant_net_amount": {
             "type": "number",
-            "format": "float"
+            "format": "float",
+            "description": "Net amount for merchant"
           },
-          "sgst": {
-            "type": "number",
-            "format": "float"
+          "mop_type": {
+            "type": "string",
+            "description": "Method of payment type",
+            "enum": [
+              "UPI",
+              "CREDIT_CARD",
+              "DEBIT_CARD",
+              "NET_BANKING",
+              "QR"
+            ]
           },
-          "cgst": {
-            "type": "number",
-            "format": "float"
-          },
-          "igst": {
-            "type": "number",
-            "format": "float"
-          },
-          "merchant_transaction_id": {
-            "type": "string"
-          },
-          "card_type": {
-            "type": "string"
-          },
-          "offer_service_fee": {
-            "type": "number",
-            "format": "float"
-          },
-          "offer_service_tax": {
-            "type": "number",
-            "format": "float"
+          "transaction_currency": {
+            "type": "string",
+            "description": "Currency of the transaction"
           },
           "forex_rate": {
             "type": "number",
-            "format": "float"
-          },
-          "discount": {
-            "type": "number",
-            "format": "float"
-          },
-          "additional_tdr_fee": {
-            "type": "number",
-            "format": "float"
-          },
-          "additional_tdr_tax": {
-            "type": "number",
-            "format": "float"
-          },
-          "total_processing_fee": {
-            "type": "number",
-            "format": "float"
-          },
-          "total_service_tax": {
-            "type": "number",
-            "format": "float"
-          },
-          "transaction_currency": {
-            "type": "string"
+            "format": "float",
+            "description": "Forex rate applied to the transaction"
           }
         }
       },
@@ -2692,6 +2657,9 @@
           "settlement_amount": {
             "type": "number",
             "format": "float"
+          },
+          "settlement_currency": {
+            "type": "string"
           }
         }
       },
@@ -3472,13 +3440,58 @@
           "mop_detail": {
             "type": "object",
             "nullable": true,
-            "description": "Method of payment specific details",
-            "properties": {
-              "upi_id": {
-                "type": "string",
-                "description": "UPI ID for UPI payments"
+            "description": "Method of payment specific details - structure varies based on mop_type",
+            "oneOf": [
+              {
+                "title": "UPI Details",
+                "type": "object",
+                "properties": {
+                  "upi_id": {
+                    "type": "string",
+                    "description": "UPI ID for UPI payments"
+                  }
+                },
+                "required": ["upi_id"]
+              },
+              {
+                "title": "Card Details",
+                "type": "object",
+                "properties": {
+                  "card_mask": {
+                    "type": "string",
+                    "description": "Masked card number"
+                  },
+                  "card_holder_name": {
+                    "type": "string",
+                    "description": "Name of the card holder"
+                  },
+                  "card_issuer_country": {
+                    "type": "string",
+                    "description": "Country of the card issuer"
+                  },
+                  "card_issuer_bank": {
+                    "type": "string",
+                    "description": "Bank that issued the card"
+                  }
+                },
+                "required": ["card_mask", "card_holder_name", "card_issuer_country", "card_issuer_bank"]
+              },
+              {
+                "title": "Net Banking Details",
+                "type": "object",
+                "properties": {
+                  "bank_ref_num": {
+                    "type": "string",
+                    "description": "Bank reference number"
+                  },
+                  "acq_id": {
+                    "type": "string",
+                    "description": "Acquirer ID"
+                  }
+                },
+                "required": ["bank_ref_num", "acq_id"]
               }
-            }
+            ]
           },
           "payment_completed_at": {
             "type": "string",
