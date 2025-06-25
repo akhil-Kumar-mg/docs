@@ -24,31 +24,15 @@ This webhook is triggered when a customer successfully completes a payment trans
     "event_type": "PAYMENT_SUCCESSFUL",
     "event_time": "2024-02-15 16:53:15",
     "version": "1.0",
-    "sequence_number": "a3791670-7c5d-4a86-aa7a-fe35e58a9dbb",
+    "sequence_number": "e40552bf-ed12-4f35-9a97-162d97e6fa34",
     "data": {
-        "id": "PR9860790452",
-        "merchant": {
-            "id": "6889114728",
-            "name": "Herring Lt"
-        },
-        "reference_id": "TEST_S5DL8G",
-        "buyer": {
-            "name": "John Doe",
-            "email": "john.doe@example.com",
-            "phone": "+919876543210"
-        },
-        "order_id": "OD1418501900",
-        "amount": {
-            "amount": 1000.0,
-            "total_amount": 1000.0,
-            "currency": "INR"
-        },
-        "created_at": "2025-06-23T15:33:17.372325Z",
         "status": "CAPTURED",
-        "comment": "Invoice and AWB file missing",
-        "preferred_method": "UPI",
+        "message": "Payment successful",
         "mop_type": "UPI",
-        "settlement_status": "READY_FOR_SETTLEMENT"
+        "order_id": "OD3376378679",
+        "payment_id": "PR6938527534",
+        "bank_ref_num": "OD3376378679-PR6938527534",
+        "payment_completed_at": "2025-06-24T12:30:44.000000Z"
     }
 }
 ```
@@ -78,7 +62,7 @@ This webhook is triggered when a customer successfully completes a payment trans
     <ParamField path="sequence_number" type="string" required>
       Unique identifier for the event instance
       
-      **Example**: `"a3791670-7c5d-4a86-aa7a-fe35e58a9dbb"`
+      **Example**: `"e40552bf-ed12-4f35-9a97-162d97e6fa34"`
     </ParamField>
 
     <ParamField path="data" type="object" required>
@@ -87,94 +71,16 @@ This webhook is triggered when a customer successfully completes a payment trans
   </Tab>
 
   <Tab title="Data Object Fields">
-    <ParamField path="data.id" type="string" required>
-      Payment request ID
-      
-      **Example**: `"PR9860790452"`
-    </ParamField>
-
-    <ParamField path="data.merchant.id" type="string" required>
-      Merchant ID
-      
-      **Example**: `"6889114728"`
-    </ParamField>
-
-    <ParamField path="data.merchant.name" type="string" required>
-      Merchant name
-      
-      **Example**: `"Herring Lt"`
-    </ParamField>
-
-    <ParamField path="data.reference_id" type="string" required>
-      Reference ID for the payment
-      
-      **Example**: `"TEST_S5DL8G"`
-    </ParamField>
-
-    <ParamField path="data.buyer.name" type="string" required>
-      Buyer's name
-      
-      **Example**: `"John Doe"`
-    </ParamField>
-
-    <ParamField path="data.buyer.email" type="string" required>
-      Buyer's email address
-      
-      **Example**: `"john.doe@example.com"`
-    </ParamField>
-
-    <ParamField path="data.buyer.phone" type="string" required>
-      Buyer's phone number
-      
-      **Example**: `"+919876543210"`
-    </ParamField>
-
-    <ParamField path="data.order_id" type="string" required>
-      Order ID
-      
-      **Example**: `"OD1418501900"`
-    </ParamField>
-
-    <ParamField path="data.amount.amount" type="number" required>
-      Payment amount
-      
-      **Example**: `1000.0`
-    </ParamField>
-
-    <ParamField path="data.amount.total_amount" type="number" required>
-      Total amount including fees
-      
-      **Example**: `1000.0`
-    </ParamField>
-
-    <ParamField path="data.amount.currency" type="string" required>
-      Currency code
-      
-      **Example**: `"INR"`
-    </ParamField>
-
-    <ParamField path="data.created_at" type="string" required>
-      ISO 8601 creation timestamp
-      
-      **Example**: `"2025-06-23T15:33:17.372325Z"`
-    </ParamField>
-
     <ParamField path="data.status" type="string" required>
       Payment status (CAPTURED for successful payments)
       
       **Example**: `"CAPTURED"`
     </ParamField>
 
-    <ParamField path="data.comment" type="string" required>
-      Additional comment or note
+    <ParamField path="data.message" type="string" required>
+      Additional message or note
       
-      **Example**: `"Invoice and AWB file missing"`
-    </ParamField>
-
-    <ParamField path="data.preferred_method" type="string" required>
-      Preferred payment method
-      
-      **Example**: `"UPI"`
+      **Example**: `"Payment successful"`
     </ParamField>
 
     <ParamField path="data.mop_type" type="string" required>
@@ -183,10 +89,28 @@ This webhook is triggered when a customer successfully completes a payment trans
       **Example**: `"UPI"`
     </ParamField>
 
-    <ParamField path="data.settlement_status" type="string" required>
-      Current settlement status
+    <ParamField path="data.order_id" type="string" required>
+      Order ID
       
-      **Example**: `"READY_FOR_SETTLEMENT"`
+      **Example**: `"OD3376378679"`
+    </ParamField>
+
+    <ParamField path="data.payment_id" type="string" required>
+      Payment ID
+      
+      **Example**: `"PR6938527534"`
+    </ParamField>
+
+    <ParamField path="data.bank_ref_num" type="string" required>
+      Bank reference number
+      
+      **Example**: `"OD3376378679-PR6938527534"`
+    </ParamField>
+
+    <ParamField path="data.payment_completed_at" type="string" required>
+      ISO 8601 payment completion timestamp
+      
+      **Example**: `"2025-06-24T12:30:44.000000Z"`
     </ParamField>
   </Tab>
 </Tabs>

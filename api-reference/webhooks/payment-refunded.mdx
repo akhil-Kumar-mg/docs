@@ -20,14 +20,15 @@ This webhook is triggered when a payment is refunded to the customer through Exi
     "event_type": "PAYMENT_REFUNDED",
     "event_time": "2024-02-15 16:53:15",
     "version": "1.0",
-    "sequence_number": "a3791670-7c5d-4a86-aa7a-fe35e58a9dbb",
+    "sequence_number": "e40552bf-ed12-4f35-9a97-162d97e6fa34",
     "data": {
         "refunds": [
             {
                 "payment_request_id": "PR7485664995",
                 "order_id": "OD6085456489",
+                "refund_id": "RF2684785771",
                 "amount": 1000,
-                "bank_arn": null
+                "bank_arn": "arn"
             }
         ]
     }
@@ -57,7 +58,7 @@ This webhook is triggered when a payment is refunded to the customer through Exi
     <ParamField path="sequence_number" type="string" required>
       Unique identifier for the event instance
       
-      **Example**: `"a3791670-7c5d-4a86-aa7a-fe35e58a9dbb"`
+      **Example**: `"e40552bf-ed12-4f35-9a97-162d97e6fa34"`
     </ParamField>
 
     <ParamField path="data" type="object" required>
@@ -82,6 +83,12 @@ This webhook is triggered when a payment is refunded to the customer through Exi
       **Example**: `"OD6085456489"`
     </ParamField>
 
+    <ParamField path="data.refunds[].refund_id" type="string" required>
+      Unique refund identifier
+      
+      **Example**: `"RF2684785771"`
+    </ParamField>
+
     <ParamField path="data.refunds[].amount" type="number" required>
       Refund amount
       
@@ -91,7 +98,7 @@ This webhook is triggered when a payment is refunded to the customer through Exi
     <ParamField path="data.refunds[].bank_arn" type="string">
       Bank ARN (Acquirer Reference Number) - may be null
       
-      **Example**: `null`
+      **Example**: `"arn"`
     </ParamField>
   </Tab>
 </Tabs>

@@ -1372,6 +1372,63 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CreateMerchantResponse"
+                },
+                "example": {
+                  "success": true,
+                  "message": "Sub-merchant created successfully",
+                  "data": {
+                    "id": "6182929449",
+                    "settlement_details": {
+                      "bank_account_number": "9876543210",
+                      "bank_account_name": "GlobalTech Solutions Inc.",
+                      "bank_swift_code": "CHASUS33XXX",
+                      "bank_name": "JPMorgan Chase Bank",
+                      "bank_branch_name": "Corporate Banking Division",
+                      "bank_address": "270 Park Avenue",
+                      "bank_city": "New York",
+                      "bank_state": "NY",
+                      "bank_country": "United States",
+                      "bank_pincode": "10017",
+                      "routing_number": "021000021",
+                      "settlement_currency": "USD"
+                    },
+                    "created_at": "2025-01-15T10:30:00.000000Z",
+                    "updated_at": "2025-01-15T10:30:00.000000Z",
+                    "invoice_file": null,
+                    "company_details": {
+                      "legal_name": "GlobalTech Solutions Inc.",
+                      "brand_name": "GlobalTech",
+                      "registration_number": "US-CORP-99887766",
+                      "international_org_type": "PRIVATE_LIMITED",
+                      "tax_id": "94-1234567",
+                      "website": "https://www.globaltech.io",
+                      "monthly_avg_transaction_value": "150000.00",
+                      "monthly_avg_transaction_volume": "300",
+                      "communication_address": "500 Mission Street, Suite 2400",
+                      "communication_city": "San Francisco",
+                      "communication_state": "CA",
+                      "communication_country": "United States",
+                      "communication_pincode": "94105",
+                      "same_as_registered_address": false,
+                      "registered_address": "1600 Amphitheatre Parkway",
+                      "registered_city": "Mountain View",
+                      "registered_state": "CA",
+                      "registered_country": "United States",
+                      "registered_pincode": "94043",
+                      "business_category": "TECHNOLOGY",
+                      "business_mode": "B2B",
+                      "commodity": "Enterprise Software Solutions",
+                      "payment_terms": "NET_30",
+                      "hs_codes": [
+                        "85234910",
+                        "84715000"
+                      ],
+                      "category": "Enterprise SaaS",
+                      "description_of_products_and_services": "GlobalTech provides cloud-native enterprise software, including AI-powered analytics platforms, CRM solutions, and infrastructure automation tools. We enable digital transformation for Fortune 500 companies through scalable and secure software systems.",
+                      "agreement_details": "Master Service Agreement dated 2024-01-10 with Global Clients",
+                      "purpose_code": "P0101"
+                    }
+                  }
                 }
               }
             }
@@ -1590,10 +1647,14 @@
                   },
                   "document_type": {
                     "type": "string",
-                    "description": "Type of document (e.g., INVOICE)."
+                    "description": "Type of document (INVOICE). Only invoice is supported currently."
                   }
                 },
                 "required": ["file", "document_type"]
+              },
+              "example": {
+                "document_type": "INVOICE",
+                "file": "Screenshot 2025-05-21 at 2.44.41 PM.png"
               }
             }
           }
@@ -2966,20 +3027,22 @@
       },
       "CreateMerchantResponse": {
         "type": "object",
+        "required": [
+          "success",
+          "message",
+          "data"
+        ],
         "properties": {
           "success": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indicates if the request was successful"
           },
           "message": {
-            "type": "string"
+            "type": "string",
+            "description": "Response message"
           },
           "data": {
-            "type": "object",
-            "properties": {
-              "merchant_id": {
-                "type": "string"
-              }
-            }
+            "$ref": "#/components/schemas/MerchantDetails"
           }
         }
       },

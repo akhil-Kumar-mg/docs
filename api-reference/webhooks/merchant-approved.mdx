@@ -28,8 +28,8 @@ This webhook is triggered when a merchant account is approved and can start coll
     "data": {
         "approved_at": "2024-12-15T14:32:18.456789Z",
         "merchant_id": "1380229823",
-        "merchant_legal_name": "TechStore Solutions Private Limited",
-        "merchant_trade_name": "TechStore Online"
+        "legal_name": "TechStore Solutions Private Limited",
+        "trade_name": "TechStore Online"
     }
 }
 ```
@@ -80,13 +80,13 @@ This webhook is triggered when a merchant account is approved and can start coll
       **Example**: `"1380229823"`
     </ParamField>
 
-    <ParamField path="data.merchant_legal_name" type="string" required>
+    <ParamField path="data.legal_name" type="string" required>
       Legal business name of the merchant as registered with authorities
       
       **Example**: `"TechStore Solutions Private Limited"`
     </ParamField>
 
-    <ParamField path="data.merchant_trade_name" type="string" required>
+    <ParamField path="data.trade_name" type="string" required>
       Trading or brand name of the merchant used for customer-facing operations
       
       **Example**: `"TechStore Online"`

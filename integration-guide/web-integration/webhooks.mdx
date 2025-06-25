@@ -127,6 +127,7 @@ EximPe signs each webhook with an HMAC signature to ensure authenticity:
     <ul>
       <li>Use your API key as the secret</li>
       <li>Use the raw JSON body as the message</li>
+      <li>**Important:** If reconstructing from JSON object, ensure consistent serialization using `json.dumps()` with `sort_keys=True` and `separators=(",", ":")` to match EximPe's format</li>
       <li>Generate HMAC-SHA256 hash</li>
       <li>Convert to hexadecimal string</li>
     </ul>
@@ -158,6 +159,16 @@ function verifyWebhookSignature(payload, signature, apiKey) {
     Buffer.from(signature, 'hex'),
     Buffer.from(expectedSignature, 'hex')
   );
+}
+
+function generateSignatureFromObject(webhookData, apiKey) {
+  // If you need to recreate signature from a JSON object
+  // Use the same serialization as EximPe
+  const payloadJson = JSON.stringify(webhookData, Object.keys(webhookData).sort());
+  
+  const hmac = crypto.createHmac('sha256', apiKey);
+  hmac.update(payloadJson, 'utf8');
+  return hmac.digest('hex');
 }
 
 // Usage in Express.js
@@ -193,6 +204,17 @@ def verify_webhook_signature(payload, signature, api_key):
     # Compare signatures securely
     return hmac.compare_digest(signature, expected_signature)
 
+def generate_signature_from_object(webhook_data, api_key):
+    # If you need to recreate signature from a JSON object
+    # Use the same serialization as EximPe
+    payload_json = json.dumps(
+        webhook_data, sort_keys=True, separators=(",", ":")
+    )
+    signature = hmac.new(
+        api_key.encode(), payload_json.encode(), hashlib.sha256
+    ).hexdigest()
+    return signature
+
 # Usage in Flask
 from flask import Flask, request
 
@@ -220,6 +242,15 @@ function verifyWebhookSignature($payload, $signature, $apiKey) {
     
     // Compare signatures securely
     return hash_equals($expectedSignature, $signature);
+}
+
+function generateSignatureFromObject($webhookData, $apiKey) {
+    // If you need to recreate signature from a JSON object
+    // Use the same serialization as EximPe
+    ksort($webhookData); // Sort keys for consistency
+    $payloadJson = json_encode($webhookData, JSON_UNESCAPED_SLASHES);
+    
+    return hash_hmac('sha256', $payloadJson, $apiKey);
 }
 
 // Usage in Laravel/Symfony
