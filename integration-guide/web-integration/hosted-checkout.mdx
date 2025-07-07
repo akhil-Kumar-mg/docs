@@ -153,27 +153,39 @@ If you attempt to use an invalid or expired session ID, you'll receive the follo
 
 ```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>EximPe Checkout Integration</title>
-    <script src="https://cdn.eximpe.com/sdk/eximpe-sdk.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EximPe Checkout Integration</title>
+  <!-- EximPe SDK -->
+  <script src="https://cdn.eximpe.com/sdk/eximpe-sdk.min.js"></script>
 </head>
 <body>
-    <div>
-        <button id="payButton">Pay Now</button>
-    </div>
-    <script>
-        const eximpe = EximPe({
-            mode: "sandbox"
-        });
+  <div>
+    <button id="payButton">Pay Now</button>
+  </div>
 
-        document.getElementById("payButton").addEventListener("click", () => {
-            const checkoutOptions = {
-                sessionId: "your-session-id",
-            };
-            eximpe.checkout(checkoutOptions);
+  <script>
+    window.onload = function () {
+
+      const eximpe = new Eximpe({
+        mode: "sandbox"
+      });
+
+      document.getElementById("payButton").addEventListener("click", () => {
+        const checkoutOptions = {
+          paymentSessionId:
+            "session-id", // Replace with actual session ID
+        };
+
+        eximpe.checkout(checkoutOptions).catch((error) => {
+          console.error("Checkout error:", error);
         });
-    </script>
+      });
+      
+    };
+  </script>
 </body>
 </html>
 ```
