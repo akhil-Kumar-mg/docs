@@ -1,0 +1,41 @@
+---
+title: "Server-to-Server UPI Collection Integration"
+description: "Enable UPI collect flows via EximPe’s server-to-server API with minimal redirection"
+---
+
+<Note>
+  The Server-to-Server (S2S) UPI Collection integration eliminates redirection hops by validating the VPA and initiating transactions directly from your backend. Deliver a seamless, secure checkout experience for your customers.
+</Note>
+
+<CardGroup cols={4}>
+  <Card title="Validate VPA" icon="user-check" href="#step-1-validate-vpa">
+    Ensure the customer’s VPA is valid before proceeding
+  </Card>
+  <Card title="Initiate Payment" icon="credit-card" href="#step-2-initiate-payment">
+    Create a UPI collect transaction via server-to-server API
+  </Card>
+  <Card title="Check Status" icon="clock" href="#step-3-check-transaction-status">
+    Poll the Verify Payment API for real-time updates
+  </Card>
+  <Card title="Server Callback" icon="server" href="#step-4-server-to-server-callback-response">
+    Receive asynchronous status updates via webhook
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- **Merchant Key & Salt**: Your EximPe merchant key and salt for hash generation.
+- **Callback URL**: A publicly accessible endpoint configured in your EximPe dashboard for S2S callbacks.
+- **HTTP Client**: Ability to perform HTTPS `GET` and `POST` requests from your server.
+- **JSON & Hashing**: Familiarity with JSON request bodies and SHA-512 hash computation.
+
+## Integration Steps
+
+The integration consists of four steps:
+
+1. **Validate VPA**
+2. **Initiate Payment**
+3. **Check Transaction Status**
+4. **Server-to-Server Callback**
