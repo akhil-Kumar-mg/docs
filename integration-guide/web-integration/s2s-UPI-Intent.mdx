@@ -1,67 +1,15 @@
 ---
-title: "Server-to-Server UPI Intent Integration"
+title: "S2S UPI Intent"
 description: "Enable direct UPI payments without redirection using EximPe’s server-to-server UPI intent flow"
 ---
 
-<Note>
-  The Server-to-Server (S2S) UPI Intent integration eliminates redirection hops by initiating transactions from your backend. Deliver a seamless checkout experience while maintaining control and confidence for your customers.
-</Note>
+# Introduction
 
-<CardGroup cols={3}>
-  <Card title="No Redirect Hops" icon="arrow-right" href="#step-1-initiate-payment">
-    Initiate transactions directly from your server to improve user experience
-  </Card>
-  <Card title="Flexible Intent Invocation" icon="phone" href="#step-2-invoke-upi-intent">
-    Support both generic and app-specific UPI intents on mobile web and Android apps
-  </Card>
-  <Card title="Robust Server Callbacks" icon="server" href="#step-4-server-to-server-callback">
-    Receive asynchronous status updates via server-to-server callbacks
-  </Card>
-</CardGroup>
+The Server-to-Server integration is performed at the server level, that is, your server (merchant server) and EximPe server. The transaction is initiated from your server; hence redirection hop is eliminated. Since the details are captured on your page, customers gain confidence and enhance the checkout experience.
 
-## Prerequisites
+The following steps allow you to integrate the server-to-server UPI intent:
 
-Before you begin, ensure you have:
-
-- **Merchant Key & Salt**: Your EximPe merchant key and salt for hash generation.  
-- **Callback URL**: A publicly accessible URL configured in your EximPe dashboard for server-to-server callbacks.  
-- **cURL or HTTP Client**: Capability to make HTTPS `POST` and `GET` requests from your server.  
-- **UPI Knowledge**: Familiarity with UPI intent URL parameters and encoding.
-
-## Integration Steps
-
-The integration consists of four steps:
-
-1. **Initiate Payment**  
-2. **Invoke UPI Intent**  
-3. **Check Transaction Status**  
-4. **Server-to-Server Callback**
-
----
-
-### Step 1: Initiate Payment
-
-Make a server-to-server `POST` to create a UPI intent transaction:
-
-<CodeGroup>
-
-```bash cURL
-curl -X POST https://api.eximpe.com/payment/s2s/upi \
-  -H "Content-Type: application/json" \
-  -H "X-Client-Key: YOUR_CLIENT_KEY" \
-  -d '{
-    "key": "YOUR_MERCHANT_KEY",
-    "txnid": "TXN123456",
-    "amount": "1000.00",
-    "productinfo": "Order Description",
-    "firstname": "John",
-    "email": "john.doe@example.com",
-    "phone": "9876543210",
-    "pg": "UPI",
-    "bankcode": "INTENT",
-    "txn_s2s_flow": 4,
-    "s2s_client_ip": "203.0.113.5",
-    "s2s_device_info": "Mozilla/5.0...",
-    "upiAppName": "googlepay",
-    "hash": "COMPUTED_SHA512_HASH"
-}'
+1. Initiate payment
+2. Invoke UPI Intent on customer’s device
+3. Check UPI transaction status
+4. EximPe sends Server-to-Server callback response
