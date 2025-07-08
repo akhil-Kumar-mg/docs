@@ -5,7 +5,21 @@ description: "Enable direct UPI payments without redirection using EximPe’s se
 
 # Introduction
 
-The Server-to-Server integration is performed at the server level, that is, your server (merchant server) and EximPe server. The transaction is initiated from your server; hence redirection hop is eliminated. Since the details are captured on your page, customers gain confidence and enhance the checkout experience.
+<Note>
+  The Server-to-Server (S2S) UPI Intent integration eliminates redirection hops by initiating transactions from your backend. Deliver a seamless checkout experience while maintaining control and confidence for your customers.
+</Note>
+
+<CardGroup cols={3}>
+  <Card title="No Redirect Hops" icon="arrow-right" href="#step-1-initiate-payment">
+    Initiate transactions directly from your server to improve user experience
+  </Card>
+  <Card title="Flexible Intent Invocation" icon="phone" href="#step-2-invoke-upi-intent">
+    Support both generic and app-specific UPI intents on mobile web and Android apps
+  </Card>
+  <Card title="Robust Server Callbacks" icon="server" href="#step-4-server-to-server-callback">
+    Receive asynchronous status updates via server-to-server callbacks
+  </Card>
+</CardGroup>
 
 The following steps allow you to integrate the server-to-server UPI intent:
 
@@ -13,3 +27,7 @@ The following steps allow you to integrate the server-to-server UPI intent:
 2. Invoke UPI Intent on customer’s device
 3. Check UPI transaction status
 4. EximPe sends Server-to-Server callback response
+
+![image.png](/images/image.png)
+
+## Step 1: Initiate payment
